@@ -30,6 +30,8 @@ Route::group(['middleware' => ['role:karyawan']], function () {
 
     // kategori controller
     Route::post('kategori', [kategoriController::class, 'create']);
+
+    Route::delete('kategori/{id}', [kategoriController::class, 'destroy']);
 });
 
 
