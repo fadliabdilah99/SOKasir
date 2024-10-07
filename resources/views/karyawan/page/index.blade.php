@@ -4,11 +4,11 @@
 
 @push('style')
     {{-- SweetAlert2 --}}
-    <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <!-- DataTables -->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 @endpush
 
 @push('bodystyle')
@@ -66,28 +66,18 @@
                                     <th>Deskripsi</th>
                                     <th>H Modal</th>
                                     <th>qty</th>
-                                    <th>aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($so as $sos)
                                     <tr>
-                                        {{-- <td>{{$sos->kode}}</td>
+                                        <td>{{$sos->kode}}</td>
                                         <td>{{$sos->kategori->name}}</td>
                                         <td><img src="assets/fotoSO/{{$sos->foto}}" width="100px" alt=""></td>
                                         <td>{{$sos->nama}}</td>
                                         <td>{{$sos->deskripsi}}</td>
                                         <td>{{$sos->hargamodal}}</td>
-                                        <td>{{$sos->qty}}</td> --}}
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                        <td>tes</td>
-                                      
+                                        <td>{{$sos->qty}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -95,7 +85,7 @@
                     </div>
                     <!-- /.card-body -->
                 </div>
-                {{-- <div class="card">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -121,14 +111,14 @@
                                 @foreach ($kategori as $kat)
                                     <tr>
                                         <td>{{ $kat->name }}</td>
-                                        <td>{{ $kat->so->count() }}</td>
+                                        <td>{{ $kat->so }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                     <!-- /.card-body -->
-                </div> --}}
+                </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
         </div>
