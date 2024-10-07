@@ -117,7 +117,6 @@
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-2 col-form-label">kode</label>
                             <div class="col-sm-10">
-<<<<<<< HEAD
                                 <input type="Number" class="form-control" name="kode" id="inputEmail3"
                                     placeholder="3 huruf" max="3">
                             </div>
