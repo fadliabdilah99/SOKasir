@@ -23,7 +23,7 @@ class soController extends Controller
 
         $kategori = kategori::where('id', $request->kategori_id)->first();
 
-        $kode = $kategori->kode . $request->kode;
+        $kode = $kategori->kode . '-' . $request->kode;
         $file = $request->file('foto');
         $ext = $file->getClientOriginalExtension();
         $filename = time() . '.' . $ext;

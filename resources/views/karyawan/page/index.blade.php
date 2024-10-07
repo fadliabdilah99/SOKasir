@@ -129,7 +129,10 @@
                                         <td>{{ $kat->kode }}</td>
                                         <td>{{ $kat->so->count() }}</td>
                                         <td>
-                                            <button class="btn btn-primary">Edit</button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#addkategori" onclick="onEdit(this, {{ $kat->id }})">
+                                                Edit
+                                            </button>
                                             <form action="{{ url("kategori/$kat->id") }}" method="POST"
                                                 style="display: inline">
                                                 @csrf
@@ -177,6 +180,33 @@
 @endSection
 
 @push('script')
+
+
+
+    <script>
+      function onEdit(btn, historyId) {
+    const tr = btn.closest('tr');
+    const tds = tr.querySelectorAll('td');
+
+    // Logging untuk debugging
+    console.log("Editing ID:", historyId);
+    tds.forEach((td, index) => {
+        console.log(`td[${index}]:`, td.textContent.trim());
+    });
+
+    // Mengisi input field
+    document.getElementById('fade').value = tds[0].textContent.trim(); // name
+    document.getElementById('sese').value = tds[1].textContent.trim(); // kode
+
+    // Set action URL untuk update
+    document.getElementById('modalForm').action = `updatekat/${historyId}`; // URL untuk mengupdate
+    console.log("Form action set to:", document.getElementById('modalForm').action);
+}
+
+    </script>
+
+
+
     {{-- sweetalert2 --}}
     <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- DataTables  & Plugins -->
@@ -278,4 +308,7 @@
                 })
         });
     </script>
+
+
+
 @endpush
