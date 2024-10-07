@@ -105,7 +105,7 @@
                                 @foreach ($kategori as $kat)
                                 <tr>
                                     <td>{{$kat->name}}</td>
-                                    <td>{{$kat->name}}</td>
+                                    <td>{{$kat->so}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

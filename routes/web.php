@@ -3,6 +3,7 @@
 use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -10,7 +11,11 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('error');
+    if (Auth::user()->role == 'karyawan') {
+        return redirect('karyawan');
+    } elseif (Auth::user()->role == 'admin') {
+        return redirect('admin');
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -28,4 +33,4 @@ Route::group(['middleware' => ['role:karyawan']], function () {
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
