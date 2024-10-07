@@ -103,10 +103,10 @@
                             </thead>
                             <tbody>
                                 @foreach ($kategori as $kat)
-                                <tr>
-                                    <td>{{$kat->name}}</td>
-                                    <td>{{$kat->so}}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ $kat->name }}</td>
+                                        <td>{{ $kat->so }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
