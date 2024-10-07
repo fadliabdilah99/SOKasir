@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sos', function (Blueprint $table) {
-            $table->integer('kode')->after('id');
+            $table->string('kode')->after('id');
             $table->integer('hargamodal')->after('deskripsi');
         });
     }

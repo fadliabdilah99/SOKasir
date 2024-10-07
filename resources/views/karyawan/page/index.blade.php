@@ -59,21 +59,32 @@
                         <table id="example1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>User</th>
-                                    <th>file</th>
-                                    <th>Waktu pengiriman</th>
-                                    <th>Aksi</th>
+                                    <th>Kode</th>
+                                    <th>Kategori</th>
+                                    <th>foto</th>
+                                    <th>Nama</th>
+                                    <th>Deskripsi</th>
+                                    <th>H Modal</th>
+                                    <th>qty</th>
+                                    <th>aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>tes</td>
-                                    <td>tes</td>
-                                    <td>tes</td>
-                                    <td>tes</td>
-                                    <td>tes</td>
-                                </tr>
+                                @foreach ($so as $sos)
+                                    <tr>
+                                        <td>{{$sos->kode}}</td>
+                                        <td>{{$sos->kategori->name}}</td>
+                                        <td><img src="assets/fotoSO/{{$sos->foto}}" width="100px" alt=""></td>
+                                        <td>{{$sos->nama}}</td>
+                                        <td>{{$sos->deskripsi}}</td>
+                                        <td>{{$sos->hargamodal}}</td>
+                                        <td>{{$sos->qty}}</td>
+                                        <td>
+                                            <button class="btn btn-primary">edit</button>
+                                            <button class="btn btn-danger">delte</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -105,7 +116,7 @@
                                 @foreach ($kategori as $kat)
                                     <tr>
                                         <td>{{ $kat->name }}</td>
-                                        <td>{{ $kat->so }}</td>
+                                        <td>{{ $kat->so->count() }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

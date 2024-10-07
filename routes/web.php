@@ -3,6 +3,7 @@
 use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\soController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,9 @@ Route::group(['middleware' => ['role:karyawan']], function () {
 
     // kategori controller
     Route::post('kategori', [kategoriController::class, 'create']);
+
+    // so controller
+    Route::post('so', [soController::class, 'create']);
 });
 
 
