@@ -8,6 +8,7 @@
             <div class="card card-info">
                 <!-- form start -->
                 <form class="form-horizontal">
+                    @csrf
                     <div class="card-body">
                         <div class="form-group row">
                             <label for="inputPassword3" class="col-sm-2 col-form-label">Kategori</label>
@@ -20,7 +21,15 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Pilih Gambar</label>
+                            <input type="file" class="form-control" id="foto" name="foto" accept="foto"
+                                required>
+                        </div>
                         <div class="form-group row">
+
+                            <label for="deskripsi" class="col-sm-2 col-form-label">deskripsi</label>
+
                             <label for="inputEmail3" class="col-sm-2 col-form-label">Foto Produk</label>
                             <div class="col-sm-10">
                                 <div class="input-group">
@@ -36,8 +45,22 @@
                         </div>
                         <div class="form-group row">
                             <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                                <input type="deskripsi" class="form-control" id="deskripsi" placeholder="deskripsi">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="qty" class="col-sm-2 col-form-label">qty</label>
+                            <div class="col-sm-10">
+                                <input type="qty" class="form-control" id="qty" placeholder="qty">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="keterangan" class="col-sm-2 col-form-label">keterangan</label>
+                            <div class="col-sm-10">
+                                <input type="keterangan" class="form-control" id="keterangan" placeholder="keterangan">
                             </div>
                         </div>
                     </div>

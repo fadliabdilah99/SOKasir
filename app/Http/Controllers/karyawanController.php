@@ -9,7 +9,7 @@ class karyawanController extends Controller
 {
     public function index()
     {
-        $data['kategori'] = kategori::with('so')->get();
+        $data['kategori'] = kategori::with( 'so')->get();
         return view('karyawan.page.index')->with($data);
     }
 }
