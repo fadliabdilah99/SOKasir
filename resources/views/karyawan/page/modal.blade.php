@@ -7,7 +7,11 @@
             </div>
             <div class="card card-info">
                 <!-- form start -->
+<<<<<<< HEAD
                 <form class="form-horizontal" action="so" method="POST" enctype="multipart/form-data">
+=======
+                <form method="POST" action="addso" class="form-horizontal">
+>>>>>>> 9c90ac41160afe6e2c8c163f7d1ba876a7bce2f2
                     @csrf
                     <div class="card-body">
                         <div class="form-group row">
@@ -99,19 +103,25 @@
                     @csrf
                     <div class="card-body">
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label">Kategori</label>
+                            <label for="name" class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="name" id="inputEmail3"
-                                    placeholder="Kategori name">
+                                <input type="text" class="form-control" name="name" id="name"
+                                    placeholder="name">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label">kode</label>
+                            <label for="kode" class="col-sm-2 col-form-label">Kode</label>
                             <div class="col-sm-10">
+<<<<<<< HEAD
                                 <input type="Number" class="form-control" name="kode" id="inputEmail3"
                                     placeholder="3 huruf" max="3">
+=======
+                                <input type="text" class="form-control" name="kode" id="kode"
+                                    placeholder="kode">
+>>>>>>> 9c90ac41160afe6e2c8c163f7d1ba876a7bce2f2
                             </div>
                         </div>
+
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">

@@ -110,6 +110,9 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Produk Terkait</th>
+                                    <th>Kode</th>
+
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -117,6 +120,24 @@
                                     <tr>
                                         <td>{{ $kat->name }}</td>
                                         <td>{{ $kat->so->count() }}</td>
+                                        <td>{{ $kat->kode }}</td>
+                                        <th>
+                                            <button type="button" class="btn btn-primary edit-btn fas fa-edit"
+                                                data-bs-toggle="modal" data-bs-target="#editKategoriModal"
+                                                data-id="{{ $kat->id }}" data-name="{{ $kat->name }}"
+                                                data-kode="{{ $kat->kode }}">
+                                                Edit
+                                            </button>
+
+                                            <form action="kategori/{{ $kat->id }}" method="POST"
+                                                style="display: inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn bg-danger delete-data" type="submit">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </button>
+                                            </form>
+                                        </th>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -128,132 +149,116 @@
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content -->
-    </div>
-    <!-- /.content-wrapper -->
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
 
-    <!-- Main Footer -->
-    <footer class="main-footer">
-        <!-- To the right -->
-        <div class="float-right d-none d-sm-inline">
-            Anything you want
-        </div>
-        <!-- Default to the left -->
-        <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
-    </footer>
-    <!-- ./wrapper -->
+        @include('karyawan.page.modal')
 
-    <!-- REQUIRED SCRIPTS -->
+    @endSection
 
-    @include('karyawan.page.modal')
+    @push('script')
+        {{-- sweetalert2 --}}
+        <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
+        <!-- DataTables  & Plugins -->
+        <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+        <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+        <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+        <script src="plugins/jszip/jszip.min.js"></script>
+        <script src="plugins/pdfmake/pdfmake.min.js"></script>
+        <script src="plugins/pdfmake/vfs_fonts.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
-@endSection
+        @if ($message = Session::get('success'))
+            <script>
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "{{ $message }}",
+                    icon: "success"
+                });
+            </script>
+        @endif
+        @if ($message = Session::get('error'))
+            <script>
+                Swal.fire({
+                    title: "gagal!",
+                    text: "{{ $message }}",
+                    icon: "error"
+                });
+            </script>
+        @endif
 
-@push('script')
-    {{-- sweetalert2 --}}
-    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
-    <!-- DataTables  & Plugins -->
-    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="plugins/jszip/jszip.min.js"></script>
-    <script src="plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+        @if ($message = Session::get($errors->any()))
+            <script>
+                Swal.fire({
+                    title: "Errors!",
+                    text: "{{ $message }}",
+                    icon: "error"
+                });
+            </script>
+        @endif
 
-    @if ($message = Session::get('success'))
+        <!-- Page specific script -->
         <script>
-            Swal.fire({
-                title: "Berhasil!",
-                text: "{{ $message }}",
-                icon: "success"
+            $(function() {
+                $("#example1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                $('#example2').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                });
+            });
+            $(function() {
+                $("#rex1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                }).buttons().container().appendTo('#rex1_wrapper .col-md-6:eq(0)');
+                $('#rex2').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                });
+            });
+
+            //script edit
+            <
+
+
+            // script delete start
+            $('.delete-data').click(function(e) {
+                e.preventDefault()
+                const data = $(this).closest('tr').find('td:eq(0)').text()
+                Swal.fire({
+                        title: 'Semua Data Terkait Akan Hilang',
+                        text: `Apakah penghapusan data ${data} akan dilanjutkan?`,
+                        icon: 'warning',
+                        showDenyButton: true,
+                        confirmButtonText: 'Ya',
+                        denyButtonText: 'Tidak',
+                        focusConfirm: false
+                    })
+                    .then((result) => {
+                        if (result.isConfirmed) $(e.target).closest('form').submit()
+                        else swal.close()
+                    })
             });
         </script>
-    @endif
-    @if ($message = Session::get('error'))
-        <script>
-            Swal.fire({
-                title: "gagal!",
-                text: "{{ $message }}",
-                icon: "error"
-            });
-        </script>
-    @endif
-
-    @if ($message = Session::get($errors->any()))
-        <script>
-            Swal.fire({
-                title: "Errors!",
-                text: "{{ $message }}",
-                icon: "error"
-            });
-        </script>
-    @endif
-
-    <!-- Page specific script -->
-    <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
-        $(function() {
-            $("#rex1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#rex1_wrapper .col-md-6:eq(0)');
-            $('#rex2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
-
-        // script delete start
-        $('.delete-data').click(function(e) {
-            e.preventDefault()
-            const data = $(this).closest('tr').find('td:eq(1)').text()
-            Swal.fire({
-                    title: 'Semua Data Terkait Akan Hilang',
-                    text: `Apakah penghapusan data ${data} akan dilanjutkan?`,
-                    icon: 'warning',
-                    showDenyButton: true,
-                    confirmButtonText: 'Ya',
-                    denyButtonText: 'Tidak',
-                    focusConfirm: false
-                })
-                .then((result) => {
-                    if (result.isConfirmed) $(e.target).closest('form').submit()
-                    else swal.close()
-                })
-        });
-    </script>
-@endpush
+    @endpush

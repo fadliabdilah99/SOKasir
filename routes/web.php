@@ -34,6 +34,7 @@ Route::group(['middleware' => ['role:karyawan']], function () {
 
     // so controller
     Route::post('so', [soController::class, 'create']);
+    Route::delete('kategori/{id}', [kategoriController::class, 'destroy']);
 });
 
 
