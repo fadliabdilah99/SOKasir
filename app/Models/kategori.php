@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class kategori extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function so(){
+        return $this->hasMany(so::class);
+    }
 }

@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class so extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function kategori(){
+        return $this->belongsTo(kategori::class);
+    }
 }
