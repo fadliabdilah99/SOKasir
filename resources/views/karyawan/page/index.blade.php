@@ -66,18 +66,31 @@
                                     <th>Deskripsi</th>
                                     <th>H Modal</th>
                                     <th>qty</th>
+                                    <th>aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($so as $sos)
                                     <tr>
-                                        <td>{{$sos->kode}}</td>
-                                        <td>{{$sos->kategori->name}}</td>
-                                        <td><img src="assets/fotoSO/{{$sos->foto}}" width="100px" alt=""></td>
-                                        <td>{{$sos->nama}}</td>
-                                        <td>{{$sos->deskripsi}}</td>
-                                        <td>{{$sos->hargamodal}}</td>
-                                        <td>{{$sos->qty}}</td>
+                                        <td>{{ $sos->kode }}</td>
+                                        <td>{{ $sos->kategori->name }}</td>
+                                        <td><img src="assets/fotoSO/{{ $sos->foto }}" width="100px" alt=""></td>
+                                        <td>{{ $sos->nama }}</td>
+                                        <td>{{ $sos->deskripsi }}</td>
+                                        <td>{{ $sos->hargamodal }}</td>
+                                        <td>{{ $sos->qty }}</td>
+
+                                        <td>
+                                            <button class="btn btn-primary">Edit</button>
+                                            <form action="{{ url("so/$sos->id") }}" method="POST" style="display: inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn bg-danger delete-data" type="button">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -104,14 +117,28 @@
                             <thead>
                                 <tr>
                                     <th>Nama</th>
+                                    <th>Kode</th>
                                     <th>Produk Terkait</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($kategori as $kat)
                                     <tr>
                                         <td>{{ $kat->name }}</td>
-                                        <td>{{ $kat->so }}</td>
+                                        <td>{{ $kat->kode }}</td>
+                                        <td>{{ $kat->so->count() }}</td>
+                                        <td>
+                                            <button class="btn btn-primary">Edit</button>
+                                            <form action="{{ url("kategori/$kat->id") }}" method="POST"
+                                                style="display: inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn bg-danger delete-data" type="button">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -235,7 +262,7 @@
         // script delete start
         $('.delete-data').click(function(e) {
             e.preventDefault()
-            const data = $(this).closest('tr').find('td:eq(1)').text()
+            const data = $(this).closest('tr').find('td:eq(0)').text()
             Swal.fire({
                     title: 'Semua Data Terkait Akan Hilang',
                     text: `Apakah penghapusan data ${data} akan dilanjutkan?`,

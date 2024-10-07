@@ -13,7 +13,7 @@ class soController extends Controller
         $request->validate([
             'kode' => 'required|string|max:255',
             'kategori_id' => 'required',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // file harus berupa gambar
+            'foto' => 'required', // file harus berupa gambar
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'hargamodal' => 'required|numeric|min:0', // harga harus angka
@@ -41,5 +41,11 @@ class soController extends Controller
         ];
         so::create($data);
         return redirect('karyawan')->with('success', 'Data Berhasilih');
+    }
+
+    public function destroy($id)
+    {
+        so::where('id', $id)->delete();
+        return redirect('karyawan')->with('success', 'Data Berhasil di hapus');
     }
 }
