@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kasirs', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('barang_id');
+            $table->bigInteger('barangeven_id');
             $table->integer('qty');
             $table->integer('total');
             $table->timestamps();
