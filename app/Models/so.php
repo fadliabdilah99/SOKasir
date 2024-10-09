@@ -9,7 +9,13 @@ class so extends Model
 {
     protected $guarded = [];
 
-    public function kategori(){
+    public function kategori()
+    {
         return $this->belongsTo(kategori::class);
+    }
+
+    public function barangeven()
+    {
+        return $this->hasMany(barangeven::class);
     }
 }

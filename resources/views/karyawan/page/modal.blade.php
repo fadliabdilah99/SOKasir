@@ -7,21 +7,22 @@
             </div>
             <div class="card card-info">
                 <!-- form start -->
-                <form class="form-horizontal" action="so" method="POST" enctype="multipart/form-data">
+                <form class="form-horizontal" id="modalFormSO" action="so" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="form-group row">
-                            <label for="kode" class="col-sm-2 col-form-label">kode</label>
+                            <label for="kode"  class="col-sm-2 col-form-label">kode</label>
                             <div class="col-sm-10">
-                                <input type="Number" name="kode" class="form-control" id="kode"
-                                    placeholder="kode">
+                                <input type="Number" name="kode" class="form-control" id="kodese"
+                                    placeholder="Masukan Kode">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="inputPassword3" class="col-sm-2 col-form-label">Kategori</label>
                             <div class="col-sm-10">
                                 <select class="form-control  select2bs4 select2-hidden-accessible" name="kategori_id"
-                                    id="">
+                                    id="kategoris">
+                                    <option disabled selected>Pilih Kategori</option>
                                     @foreach ($kategori as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
@@ -34,7 +35,7 @@
                                 <div class="input-group">
                                     <div class="custom-file">
                                         <input type="file" name="foto" class="custom-file-input"
-                                            id="exampleInputFile">
+                                            id="fotos">
                                         <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                     </div>
                                     <div class="input-group-append">
@@ -46,14 +47,14 @@
                         <div class="form-group row">
                             <label for="nama" class="col-sm-2 col-form-label">nama</label>
                             <div class="col-sm-10">
-                                <input type="text" name="nama" class="form-control" id="nama"
+                                <input type="text" name="nama" class="form-control" id="namas"
                                     placeholder="nama">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="deskripsi" class="col-sm-2 col-form-label">deskripsi</label>
                             <div class="col-sm-10">
-                                <input type="text" name="deskripsi" class="form-control" id="deskripsi"
+                                <input type="text" name="deskripsi" class="form-control" id="deskripsis"
                                     placeholder="deskripsi">
                             </div>
                         </div>
@@ -61,21 +62,21 @@
                         <div class="form-group row">
                             <label for="hargamodal" class="col-sm-2 col-form-label">harga modal</label>
                             <div class="col-sm-10">
-                                <input type="Number" name="hargamodal" class="form-control" id="hargamodal"
+                                <input type="Number" name="hargamodal" class="form-control" id="hargamodals"
                                     placeholder="hargamodal">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="qty" class="col-sm-2 col-form-label">qty</label>
                             <div class="col-sm-10">
-                                <input type="qty" name="qty" class="form-control" id="qty"
+                                <input type="qty" name="qty" class="form-control" id="qtys"
                                     placeholder="qty">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="keterangan" class="col-sm-2 col-form-label">keterangan</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="keterangan" id="keterangan"
+                                <input type="text" class="form-control" name="keterangan" id="keterangans"
                                     placeholder="keterangan">
                             </div>
                         </div>

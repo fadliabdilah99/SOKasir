@@ -21,18 +21,7 @@
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0"> Halaman karyawan</h1>
-                    </div><!-- /.col -->
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Layout</a></li>
-                            <li class="breadcrumb-item active">Top Navigation</li>
-                        </ol>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                <a href="{{url('karyawan')}}">home</a>
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
@@ -51,49 +40,30 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <h2>SO Barang</h2>
-                        <button class="btn btn-success mb-2" type="button" data-toggle="modal" data-target="#addso">Tambah
-                            SO</button>
+                        <h3>Tambahkan Produk Ke Event</h3>
                     </div>
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>Kode</th>
-                                    <th>Kategori</th>
-                                    <th>foto</th>
-                                    <th>Nama</th>
-                                    <th>Deskripsi</th>
-                                    <th>H Modal</th>
-                                    <th>qty</th>
-                                    <th>aksi</th>
+                                    <th>Nama Produk</th>
+                                    <th>QTY</th>
+                                    <th>Discount</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($so as $sos)
+                                @foreach ($barangs as $barang)
                                     <tr>
-                                        <td>{{ $sos->kode }}</td>
-                                        <td>{{ $sos->kategori->name }}</td>
-                                        <td><img src="assets/fotoSO/{{ $sos->foto }}" width="100px" alt=""></td>
-                                        <td>{{ $sos->nama }}</td>
-                                        <td>{{ $sos->deskripsi }}</td>
-                                        <td>{{ $sos->hargamodal }}</td>
-                                        <td>{{ $sos->qty }}</td>
-
+                                        <td>{{ $barang->so->nama }}</td>
+                                        <td>{{ $barang->qty }}</td>
+                                        <td>{{ $barang->discount }}%</td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#addso" onclick="onEdits(this, {{ $sos->id }})">
-                                                Edit
-                                            </button>
-                                            <form action="{{ url("so/$sos->id") }}" method="POST" style="display: inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn bg-danger delete-data" type="button">
-                                                    <i class="fas fa-trash-alt"></i> Delete
-                                                </button>
-                                            </form>
+                                            data-bs-target="#addprod"
+                                            onclick="onEdit(this, {{ $barang->id }})"><i
+                                                class="fas fa-plus"></i></button>
                                         </td>
-
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -101,6 +71,7 @@
                     </div>
                     <!-- /.card-body -->
                 </div>
+
                 <div class="card">
                     <div class="card-header">
                         <div class="card-tools">
@@ -111,39 +82,38 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <h2>Kategori</h2>
-                        <button class="btn btn-success mb-2" type="button" data-toggle="modal"
-                            data-target="#addkategori">Tambah Kategori</button>
+                        <h2>Tambah Barang</h2>
                     </div>
                     <div class="card-body">
                         <table id="rex1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>id</th>
                                     <th>Kode</th>
-                                    <th>Produk Terkait</th>
-                                    <th>Aksi</th>
+                                    <th>Kategori</th>
+                                    <th>foto</th>
+                                    <th>Nama</th>
+                                    <th>H Modal</th>
+                                    <th>qty</th>
+                                    <th>Tambahkan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($kategori as $kat)
+                                @foreach ($so as $sos)
                                     <tr>
-                                        <td>{{ $kat->name }}</td>
-                                        <td>{{ $kat->kode }}</td>
-                                        <td>{{ $kat->so->count() }}</td>
+                                        <td>{{ $sos->id }}</td>
+                                        <td>{{ $sos->kode }}</td>
+                                        <td>{{ $sos->kategori->name }}</td>
+                                        <td><img src="{{ asset('assets') }}/fotoSO/{{ $sos->foto }}" width="100px"
+                                                alt=""></td>
+                                        <td>{{ $sos->nama }}</td>
+                                        <td>{{ $sos->hargamodal }}</td>
+                                        <td>{{ $sos->qty }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#addkategori" onclick="onEdit(this, {{ $kat->id }})">
-                                                Edit
-                                            </button>
-                                            <form action="{{ url("kategori/$kat->id") }}" method="POST"
-                                                style="display: inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn bg-danger delete-data" type="button">
-                                                    <i class="fas fa-trash-alt"></i> Delete
-                                                </button>
-                                            </form>
+                                                data-bs-target="#addprod"
+                                                onclick="onEdit(this, {{ $sos->id }})"><i
+                                                    class="fas fa-plus"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -178,77 +148,31 @@
 
     <!-- REQUIRED SCRIPTS -->
 
-    @include('karyawan.page.modal')
+    @include('karyawan.event.modal')
 
 @endSection
 
 @push('script')
-
-
-
-    <script>
-        function onEdit(btn, historyId) {
-            const tr = btn.closest('tr');
-            const tds = tr.querySelectorAll('td');
-
-            // Logging untuk debugging
-            console.log("Editing ID:", historyId);
-            tds.forEach((td, index) => {
-                console.log(`td[${index}]:`, td.textContent.trim());
-            });
-
-            // Mengisi input field
-            document.getElementById('fade').value = tds[0].textContent.trim(); // name
-            document.getElementById('sese').value = tds[1].textContent.trim(); // kode
-
-            // Set action URL untuk update
-            document.getElementById('modalForm').action = `updatekat/${historyId}`; // URL untuk mengupdate
-            console.log("Form action set to:", document.getElementById('modalForm').action);
-        }
-    </script>
-
-    <script>
-        function onEdits(btn, historyId) {
-            const tr = btn.closest('tr');
-            const tds = tr.querySelectorAll('td');
-
-            // Logging untuk debugging
-            console.log("Editing ID:", historyId);
-            tds.forEach((td, index) => {
-                console.log(`td[${index}]:`, td.textContent.trim());
-            }); 
-
-            // Mengisi input field
-            document.getElementById('namas').value = tds[3].textContent.trim(); // nama
-            document.getElementById('deskripsis').value = tds[4].textContent.trim(); // deskripsi
-            document.getElementById('hargamodals').value = tds[5].textContent.trim(); // harga modal
-            document.getElementById('qtys').value = tds[6].textContent.trim(); // qty
-            document.getElementById('keterangans').placeholder = "Kosongkan jika tidak di ubah";
-            document.getElementById('kodese').placeholder = "kosongkan jika tidak di ubah";
-
-            // Set action URL untuk update
-            document.getElementById('modalFormSO').action = `updateSO/${historyId}`; // URL untuk mengupdate
-            console.log("Form action set to:", document.getElementById('modalFormSO').action);
-        }
-    </script>
-
-
-
     {{-- sweetalert2 --}}
-    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
-    <!-- DataTables  & Plugins -->
-    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="plugins/jszip/jszip.min.js"></script>
-    <script src="plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- DataTabl../../es  & Plugins -->
+    <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="../../plugins/jszip/jszip.min.js"></script>
+    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+
+
+
+
 
     @if ($message = Session::get('success'))
         <script>
@@ -278,6 +202,27 @@
             });
         </script>
     @endif
+
+    <script>
+        function onEdit(btn, historyId) {
+            const tr = btn.closest('tr');
+            const tds = tr.querySelectorAll('td');
+
+            // Logging untuk debugging
+            console.log("Editing ID:", historyId);
+            tds.forEach((td, index) => {
+                console.log(`td[${index}]:`, td.textContent.trim());
+            });
+
+            $jumlah = tds[6].textContent.trim();
+
+            // Mengisi input field
+            document.getElementById('soId').value = tds[0].textContent.trim(); 
+            document.getElementById('jumlah').max = tds[6].textContent.trim(); 
+            document.getElementById('jumlah').placeholder =  "Jumlah tersedia "+tds[6].textContent.trim();
+
+        }
+    </script>
 
     <!-- Page specific script -->
     <script>

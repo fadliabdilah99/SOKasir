@@ -16,8 +16,18 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="profile-home/{{ Auth::user()->id }}" class="nav-link">Profile</a>
+                    <a href="profile" class="nav-link">Profile</a>
                 </li>
+                <li class="nav-item">
+                    <a href="event-karyawan" class="btn btn-info me-2">event</a>
+                </li>
+                <li class="nav-item">
+                    <form action="logout" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                </li>
+               
             </ul>
         </div>
 

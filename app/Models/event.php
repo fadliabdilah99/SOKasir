@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class event extends Model
 {
     protected $guarded = [];
+
+    public function barangeven(){
+        return $this->hasMany(barangeven::class);
+    }
 }

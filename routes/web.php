@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\adminController;
+use App\Http\Controllers\eventController;
 use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ProfileController;
@@ -15,7 +17,7 @@ Route::get('/dashboard', function () {
     if (Auth::user()->role == 'karyawan') {
         return redirect('karyawan');
     } elseif (Auth::user()->role == 'admin') {
-        return redirect('admin');
+        return redirect('admin-home');
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -37,6 +39,20 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     // so controller
     Route::post('so', [soController::class, 'create']);
     Route::delete('so/{id}', [soController::class, 'destroy']);
+    Route::post('updateSO/{id}', [soController::class, 'update']);
+
+    // evebt controller
+    Route::get('event-karyawan', [eventController::class, 'karyawan']);
+    Route::get('infoProd/{id}', [eventController::class, 'infoProd']);
+    Route::post('addEventProd', [eventController::class, 'addEventProd']);
+
+});
+Route::group(['middleware' => ['role:admin']], function () {
+    Route::get('admin-home', [adminController::class, 'index']);
+
+    // event controller
+    Route::get('event', [eventController::class, 'index']);
+    Route::post('event', [eventController::class, 'create']);
 });
 
 
