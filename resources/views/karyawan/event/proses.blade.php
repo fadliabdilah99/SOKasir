@@ -1,6 +1,6 @@
 @extends('karyawan.template.main')
 
-@section('title', 'product')
+@section('title', 'proses')
 
 @push('style')
     @include('karyawan.event.style')
@@ -16,7 +16,6 @@
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container">
-                <a href="{{ url('karyawan') }}">home</a>
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
@@ -35,36 +34,70 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <h3>Tambahkan Produk Ke Event</h3>
+                        <h3>Tambahkan Pesanan</h3>
                     </div>
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>Nama Produk</th>
-                                    <th>QTY</th>
-                                    <th>Discount</th>
+                                    <th>Id Pesanan</th>
+                                    <th>kode barang</th>
+                                    <th>foto</th>
+                                    <th>qty</th>
+                                    <th>total</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($barangs as $barang)
+                                @php
+                                    $total = 0;
+                                @endphp
+                                @foreach ($cart as $cart)
+                                @php
+                                    $total += $cart->barangeven->so->hargamodal * 0.45 + $cart->barangeven->so->hargamodal * $cart->qty;
+                                @endphp
                                     <tr>
-                                        <td>{{ $barang->so->nama }}</td>
-                                        <td>{{ $barang->qty }}</td>
-                                        <td>{{ $barang->discount }}%</td>
+                                        <td>{{ $cart->id }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#addprod" onclick="onEdit(this, {{ $barang->id }})"><i
-                                                    class="fas fa-plus"></i></button>
+                                            {{ $cart->barangeven->so->kode }}
                                         </td>
+                                        <td>
+                                            <img src="{{ asset('assets') }}/fotoSO/{{ $cart->barangeven->so->foto }}"
+                                                width="100px" alt="">
+                                        </td>
+                                        <td>{{ $cart->qty }}</td>
+                                        <td>Rp {{ Number_format($cart->barangeven->so->hargamodal * 0.45 + $cart->barangeven->so->hargamodal * $cart->qty) }}</td>
+
+                                        <td>
+                                            <form action="{{ url("addprod/$cart->id") }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="number" name="qty" hidden value="{{ $cart->qty }}">
+                                                <input type="number" name="barangeven_id" hidden value="{{ $cart->barangeven_id }}">
+                                                <button class="btn bg-danger delete-data" type="submit">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+
                                     </tr>
                                 @endforeach
+
                             </tbody>
                         </table>
+                        <div class="d-flex p-2 justify-content-between" style="gap: 10px">
+                            <div class="">
+                                <h5>Total: Rp {{ Number_format($total)}}</h5>
+                            </div>
+                            <div class="">
+                                <button type="button" class="btn btn-danger">Batalkan</button>
+                                <button type="button" class="btn btn-success">Selesai</button>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
+
 
                 <div class="card">
                     <div class="card-header">
@@ -76,38 +109,40 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <h2>Tambah Barang</h2>
+                        <h2>pilih barang</h2>
                     </div>
                     <div class="card-body">
                         <table id="rex1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>id</th>
+                                    <th>id event</th>
                                     <th>Kode</th>
                                     <th>Kategori</th>
                                     <th>foto</th>
                                     <th>Nama</th>
-                                    <th>H Modal</th>
+                                    <th>Harga modal + 45%</th>
                                     <th>qty</th>
-                                    <th>Tambahkan</th>
+                                    <th>aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($so as $sos)
+                                @foreach ($barangs as $sos)
                                     <tr>
                                         <td>{{ $sos->id }}</td>
-                                        <td>{{ $sos->kode }}</td>
-                                        <td>{{ $sos->kategori->name }}</td>
-                                        <td><img src="{{ asset('assets') }}/fotoSO/{{ $sos->foto }}" width="100px"
+                                        <td>{{ $sos->so->kode }}</td>
+                                        <td>{{ $sos->so->kategori->name }}</td>
+                                        <td><img src="{{ asset('assets') }}/fotoSO/{{ $sos->so->foto }}" width="100px"
                                                 alt=""></td>
-                                        <td>{{ $sos->nama }}</td>
-                                        <td>{{ $sos->hargamodal }}</td>
+                                        <td>{{ $sos->so->nama }}</td>
+                                        <td>{{ $sos->so->hargamodal * 0.45 + $sos->so->hargamodal }}</td>
                                         <td>{{ $sos->qty }}</td>
+
                                         <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#addprod" onclick="onEdit(this, {{ $sos->id }})"><i
                                                     class="fas fa-plus"></i></button>
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -141,7 +176,7 @@
 
     <!-- REQUIRED SCRIPTS -->
 
-    @include('karyawan.event.modal')
+    @include('karyawan.event.kasirmodal')
 
 @endSection
 
@@ -162,7 +197,7 @@
             $jumlah = tds[6].textContent.trim();
 
             // Mengisi input field
-            document.getElementById('soId').value = tds[0].textContent.trim();
+            document.getElementById('berangevent').value = tds[0].textContent.trim();
             document.getElementById('jumlah').max = tds[6].textContent.trim();
             document.getElementById('jumlah').placeholder = "Jumlah tersedia " + tds[6].textContent.trim();
 
@@ -209,7 +244,7 @@
         // script delete start
         $('.delete-data').click(function(e) {
             e.preventDefault()
-            const data = $(this).closest('tr').find('td:eq(0)').text()
+            const data = $(this).closest('tr').find('td:eq(1)').text()
             Swal.fire({
                     title: 'Semua Data Terkait Akan Hilang',
                     text: `Apakah penghapusan data ${data} akan dilanjutkan?`,

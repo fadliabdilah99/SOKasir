@@ -18,4 +18,9 @@ class so extends Model
     {
         return $this->hasMany(barangeven::class);
     }
+
+    public function penjualan()
+    {
+        return $this->hasMany(penjualan::class);
+    }
 }

@@ -12,4 +12,8 @@ class event extends Model
     public function barangeven(){
         return $this->hasMany(barangeven::class);
     }
+
+    public function pesanan(){
+        return $this->hasMany(pesanan::class);
+    }
 }

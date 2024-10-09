@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class barangeven extends Model
+class pesanan extends Model
 {
     protected $guarded = [];
 
@@ -14,12 +14,8 @@ class barangeven extends Model
         return $this->belongsTo(event::class);
     }
 
-    public function so()
+    public function prosesco()
     {
-        return $this->belongsTo(so::class);
-    }
-
-    public function prosesco(){
-        return $this->hashMany(prosesco::class);
+        return $this->hasMany(prosesco::class);
     }
 }

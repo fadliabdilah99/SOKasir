@@ -3,6 +3,7 @@
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\eventController;
 use App\Http\Controllers\karyawanController;
+use App\Http\Controllers\kasirController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\soController;
@@ -45,6 +46,13 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::get('event-karyawan', [eventController::class, 'karyawan']);
     Route::get('infoProd/{id}', [eventController::class, 'infoProd']);
     Route::post('addEventProd', [eventController::class, 'addEventProd']);
+
+    // kasir controller
+    Route::get('kasir/{id}', [kasirController::class, 'index']);
+    Route::get('proses/{id}', [kasirController::class, 'proses']);
+    Route::post('addPesanan', [kasirController::class, 'addPesanan']);
+    Route::post('addprod', [kasirController::class, 'addprod']);
+    Route::delete('addprod/{id}', [kasirController::class, 'destroy']);
 
 });
 Route::group(['middleware' => ['role:admin']], function () {

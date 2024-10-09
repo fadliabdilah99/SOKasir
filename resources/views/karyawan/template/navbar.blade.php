@@ -19,10 +19,10 @@
                     <a href="profile" class="nav-link">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a href="event-karyawan" class="btn btn-info me-2">event</a>
+                    <a href="{{url('event-karyawan')}}" class="btn btn-info me-2">event</a>
                 </li>
                 <li class="nav-item">
-                    <form action="logout" method="POST">
+                    <form action="{{url('logout')}}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-danger">Logout</button>
                     </form>

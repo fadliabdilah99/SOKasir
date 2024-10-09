@@ -1,6 +1,6 @@
 @extends('karyawan.template.main')
 
-@section('title', 'product')
+@section('title', 'Kasir')
 
 @push('style')
     @include('karyawan.event.style')
@@ -16,7 +16,7 @@
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container">
-                <a href="{{ url('karyawan') }}">home</a>
+                <a href="{{ url('event-karyawan') }}">event</a>
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
@@ -35,78 +35,29 @@
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <h3>Tambahkan Produk Ke Event</h3>
+                        <h3>Tambahkan Pesanan</h3>
                     </div>
                     <div class="card-body">
+                        <form action="{{url('addPesanan')}}" method="POST">
+                            @csrf
+                            <input type="number" name="event_id" hidden value="{{ $eventId }}">
+                            <button type="submit" class="btn btn-primary mb-2"><i class="fas fa-plus"></i></button>
+                        </form>
                         <table id="example1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th>Nama Produk</th>
-                                    <th>QTY</th>
-                                    <th>Discount</th>
+                                    <th>Id Pesanan</th>
+                                    <th>Total Barang</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($barangs as $barang)
+                                @foreach ($pesanan as $pesanans)
                                     <tr>
-                                        <td>{{ $barang->so->nama }}</td>
-                                        <td>{{ $barang->qty }}</td>
-                                        <td>{{ $barang->discount }}%</td>
+                                        <td>{{ $pesanans->id }}</td>
+                                        <td>{{ $pesanans->prosesco->count() }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#addprod" onclick="onEdit(this, {{ $barang->id }})"><i
-                                                    class="fas fa-plus"></i></button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <h2>Tambah Barang</h2>
-                    </div>
-                    <div class="card-body">
-                        <table id="rex1" class="table table-bordered table-striped text-center">
-                            <thead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>Kode</th>
-                                    <th>Kategori</th>
-                                    <th>foto</th>
-                                    <th>Nama</th>
-                                    <th>H Modal</th>
-                                    <th>qty</th>
-                                    <th>Tambahkan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($so as $sos)
-                                    <tr>
-                                        <td>{{ $sos->id }}</td>
-                                        <td>{{ $sos->kode }}</td>
-                                        <td>{{ $sos->kategori->name }}</td>
-                                        <td><img src="{{ asset('assets') }}/fotoSO/{{ $sos->foto }}" width="100px"
-                                                alt=""></td>
-                                        <td>{{ $sos->nama }}</td>
-                                        <td>{{ $sos->hargamodal }}</td>
-                                        <td>{{ $sos->qty }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#addprod" onclick="onEdit(this, {{ $sos->id }})"><i
-                                                    class="fas fa-plus"></i></button>
+                                            <a href="{{ url('proses/' . $pesanans->id) }}" class="btn btn-primary">proses</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -141,7 +92,7 @@
 
     <!-- REQUIRED SCRIPTS -->
 
-    @include('karyawan.event.modal')
+    {{-- @include('karyawan.event.kasirmodal') --}}
 
 @endSection
 
