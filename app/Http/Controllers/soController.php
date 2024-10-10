@@ -22,8 +22,12 @@ class soController extends Controller
         ]);
 
         $kategori = kategori::where('id', $request->kategori_id)->first();
-
         $kode = $kategori->kode . '-' . $request->kode;
+
+        if (so::where('kode', $kode)->exists()) {
+            return redirect('karyawan')->with('error', 'Kode SO sudah ada');
+        }
+
         $file = $request->file('foto');
         $ext = $file->getClientOriginalExtension();
         $filename = time() . '.' . $ext;

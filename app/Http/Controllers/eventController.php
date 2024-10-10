@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\barangeven;
 use App\Models\event;
+use App\Models\prosesco;
 use App\Models\so;
 use Illuminate\Http\Request;
 
@@ -57,4 +58,49 @@ class eventController extends Controller
 
         return redirect('infoProd/' . $request->event_id)->with('success', 'Data Berhasil di Tambahkan');
     }
+
+    public function addprod(Request $request)
+    {
+        $barangeven = barangeven::where('id', $request->barangeven_id)->first();
+        $newqty = $barangeven->qty - $request->qty;
+        prosesco::create($request->all());
+        $barangeven->update(['qty' => $newqty]);
+        return redirect()->back()->with('success', 'Data Berhasil di Tambahkan');
+    }
+    public function updateinfo(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'qty' => 'required',
+        ]);
+    
+        // Ambil data qty dari tabel `barangeven` dan `so`
+        $barangeven = barangeven::where('id', $request->event_id)->first();
+        $so = so::where('kode', $request->so_id)->first();
+    
+        // Hitung total stok yang tersedia
+        $totalQtyAvailable = $barangeven->qty + $so->qty;
+    
+        // Cek apakah qty yang diinput melebihi stok
+        if ($request->qty > $totalQtyAvailable) {
+            return redirect()->back()->with('error', 'Jumlah yang diinput melebihi stok');
+        }
+    
+        // Hitung qty baru untuk tabel `so`
+        if ($request->qty > $barangeven->qty) {
+            $newSoQty = $so->qty - ($request->qty - $barangeven->qty);
+        } else {
+            $newSoQty = ($barangeven->qty - $request->qty) + $so->qty;
+        }
+    
+        // Update qty di tabel `so`
+        $so->update(['qty' => $newSoQty]);
+        // Update qty dan discount di tabel `barangeven`
+        $barangeven->update([
+            'qty' => $request->qty,
+            'discount' => $request->discount,
+        ]);
+        return redirect()->back()->with('success', 'Data Berhasil di Update');
+    }
+    
 }

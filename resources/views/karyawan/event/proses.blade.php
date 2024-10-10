@@ -89,9 +89,14 @@
                             <div class="">
                                 <h5>Total: Rp {{ Number_format($total)}}</h5>
                             </div>
-                            <div class="">
-                                <button type="button" class="btn btn-danger">Batalkan</button>
-                                <button type="button" class="btn btn-success">Selesai</button>
+                            <div class="d-flex">
+                                <form action="{{ url('batalkan') }}" method="POST">
+                                    @csrf
+                                    <input type="number" name="pesanan_id" hidden value="{{ $pesananId }}">
+                                    <input type="number" name="eventId" hidden value="{{ $eventId }}">
+                                    <button type="submit" class="btn delete-data btn-danger">Batalkan</button>
+                                </form>
+                                <button type="button" class="ms-2 btn btn-success">Selesai</button>
                             </div>
                         </div>
                     </div>

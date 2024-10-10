@@ -41,21 +41,25 @@
                         <table id="example1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
+                                    <th>id</th>
+                                    <th>Kode Barang</th>
                                     <th>Nama Produk</th>
                                     <th>QTY</th>
-                                    <th>Discount</th>
+                                    <th>Discount(%)</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($barangs as $barang)
                                     <tr>
+                                        <td>{{ $barang->id }}</td>
+                                        <td>{{ $barang->so->kode }}</td>
                                         <td>{{ $barang->so->nama }}</td>
                                         <td>{{ $barang->qty }}</td>
-                                        <td>{{ $barang->discount }}%</td>
+                                        <td>{{ $barang->discount }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#addprod" onclick="onEdit(this, {{ $barang->id }})"><i
+                                                data-bs-target="#addprod" onclick="onEdits(this, {{ $barang->id }})"><i
                                                     class="fas fa-plus"></i></button>
                                         </td>
                                     </tr>
@@ -163,8 +167,32 @@
 
             // Mengisi input field
             document.getElementById('soId').value = tds[0].textContent.trim();
+            document.getElementById('barangeventId').value = {{ $eventId }};
             document.getElementById('jumlah').max = tds[6].textContent.trim();
             document.getElementById('jumlah').placeholder = "Jumlah tersedia " + tds[6].textContent.trim();
+        }
+
+        function onEdits(btn, historyId) {
+            const tr = btn.closest('tr');
+            const tds = tr.querySelectorAll('td');
+
+            // Logging untuk debugging
+            console.log("Editing ID:", historyId);
+            tds.forEach((td, index) => {
+                console.log(`td[${index}]:`, td.textContent.trim());
+            });
+            
+
+
+            // Mengisi input field
+            document.getElementById('barangeventId').value = tds[0].textContent.trim();
+            document.getElementById('soId').value = tds[1].textContent.trim();
+            document.getElementById('jumlah').value = tds[3].textContent.trim();
+            document.getElementById('sese').value = tds[4].textContent.trim();
+
+            // Set action URL untuk update
+            document.getElementById('modalForm').action = `update/${historyId}`; // URL untuk mengupdate
+            console.log("Form action set to:", document.getElementById('modalForm').action);
 
         }
     </script>

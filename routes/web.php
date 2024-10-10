@@ -46,14 +46,16 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::get('event-karyawan', [eventController::class, 'karyawan']);
     Route::get('infoProd/{id}', [eventController::class, 'infoProd']);
     Route::post('addEventProd', [eventController::class, 'addEventProd']);
+    Route::post('infoProd/update/{id}', [eventController::class, 'updateinfo']);
+
 
     // kasir controller
     Route::get('kasir/{id}', [kasirController::class, 'index']);
-    Route::get('proses/{id}', [kasirController::class, 'proses']);
     Route::post('addPesanan', [kasirController::class, 'addPesanan']);
+    Route::get('proses/{id}', [kasirController::class, 'proses']);
+    Route::post('batalkan', [kasirController::class, 'batalkan']);
     Route::post('addprod', [kasirController::class, 'addprod']);
     Route::delete('addprod/{id}', [kasirController::class, 'destroy']);
-
 });
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin-home', [adminController::class, 'index']);
