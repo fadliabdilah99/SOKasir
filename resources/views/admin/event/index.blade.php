@@ -56,25 +56,37 @@
                         <th>Nama Event</th>
                         <th>Lama Event</th>
                         <th>lokasi</th>
-                        <th>produk terkait</th>
+                        <th>Total pesanan </th>
+                        <th>Total pendapatan</th>
+                        <th>discount</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($events as $event)
-                        <tr>
+                        <tr @if ($event->sampai < date('Y-m-d') && $event->barangeven->count() != 0) class="bg-danger" @endif>
                             <td>{{ $event->nama }}</td>
                             <td>{{ $event->lamaevent }} -- {{ $event->sampai }}</td>
-                            <td>{{ $event->lokasi}}</td>
-                            <td><button class="btn btn-success text-dark" type="button"><i class="fas fa-eye"></i></button></td>
-                            <td>
-                                <form action="delete" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn bg-danger delete-data" type="submit">
-                                        <i class="fas fa-trash-alt"></i>
+                            <td>{{ $event->lokasi }}</td>
+                            <td>{{ $event->pesanan->count() }}</td>
+                            <td>{{ 'Rp ' . number_format($event->total_pendapatan) }}</td>
+                            <td>{{ 'Rp ' . number_format($event->total_discount) }}</td>
+
+                            <td class="d-flex justify-content-center align-items-center" style="gap: 10px">
+                                @if ($event->sampai < date('Y-m-d'))
+                                    <form action="kembalikan" method="POST">
+                                        @csrf
+                                        <input type="number" name="id" value="{{ $event->id }}" hidden>
+                                        <button type="submit" class="btn done btn-success" data-bs-toggle="modal">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#editevent" onclick="onEdit(this, {{ $event->id }})">
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -133,6 +145,23 @@
             Swal.fire({
                     title: 'Semua Data Terkait Akan Hilang',
                     text: `Apakah penghapusan data ${data} akan dilanjutkan?`,
+                    icon: 'warning',
+                    showDenyButton: true,
+                    confirmButtonText: 'Ya',
+                    denyButtonText: 'Tidak',
+                    focusConfirm: false
+                })
+                .then((result) => {
+                    if (result.isConfirmed) $(e.target).closest('form').submit()
+                    else swal.close()
+                })
+        });
+        $('.done').click(function(e) {
+            e.preventDefault()
+            const data = $(this).closest('tr').find('td:eq(0)').text()
+            Swal.fire({
+                    title: 'Event Akan Di selesaikan',
+                    text: `seluruh product di event ${data} akan di kembalikan ke so`,
                     icon: 'warning',
                     showDenyButton: true,
                     confirmButtonText: 'Ya',

@@ -47,7 +47,6 @@
                             <thead>
                                 <tr>
                                     <th>Id Pesanan</th>
-                                    <th>Total Barang</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -55,9 +54,8 @@
                                 @foreach ($pesanan as $pesanans)
                                     <tr>
                                         <td>{{ $pesanans->id }}</td>
-                                        <td>{{ $pesanans->prosesco->count() }}</td>
                                         <td>
-                                            <a href="{{ url('proses/' . $pesanans->id) }}" class="btn btn-primary">proses</a>
+                                            <a href="{{ url('invoice/' . $pesanans->id) }}" class="btn btn-primary">Invoice</a>
                                         </td>
                                     </tr>
                                 @endforeach

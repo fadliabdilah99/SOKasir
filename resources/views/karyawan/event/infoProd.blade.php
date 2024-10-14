@@ -57,10 +57,17 @@
                                         <td>{{ $barang->so->nama }}</td>
                                         <td>{{ $barang->qty }}</td>
                                         <td>{{ $barang->discount }}</td>
-                                        <td>
+                                        <td class="d-flex justify-content-center align-items-center" style="gap: 10px">
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#addprod" onclick="onEdits(this, {{ $barang->id }})"><i
                                                     class="fas fa-plus"></i></button>
+                                            <form action="{{ url("deleteProd/$barang->id") }}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn bg-danger delete-data" type="submit">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -181,7 +188,7 @@
             tds.forEach((td, index) => {
                 console.log(`td[${index}]:`, td.textContent.trim());
             });
-            
+
 
 
             // Mengisi input field
@@ -237,7 +244,7 @@
         // script delete start
         $('.delete-data').click(function(e) {
             e.preventDefault()
-            const data = $(this).closest('tr').find('td:eq(0)').text()
+            const data = $(this).closest('tr').find('td:eq(1)').text()
             Swal.fire({
                     title: 'Semua Data Terkait Akan Hilang',
                     text: `Apakah penghapusan data ${data} akan dilanjutkan?`,

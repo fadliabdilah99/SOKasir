@@ -45,17 +45,28 @@
                                     <th>foto</th>
                                     <th>qty</th>
                                     <th>total</th>
+                                    <th>discount</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
-                                    $total = 0;
+                                    $totals = 0;
+                                    $discounts = 0;
                                 @endphp
                                 @foreach ($cart as $cart)
-                                @php
-                                    $total += $cart->barangeven->so->hargamodal * 0.45 + $cart->barangeven->so->hargamodal * $cart->qty;
-                                @endphp
+                                    @php
+                                        $totals +=
+                                            $cart->barangeven->so->hargamodal * 0.45 +
+                                            $cart->barangeven->so->hargamodal * $cart->qty;
+
+                                        $discounts +=
+                                            ($cart->barangeven->so->hargamodal * 0.45 +
+                                                $cart->barangeven->so->hargamodal *
+                                                    $cart->qty *
+                                                    $cart->barangeven->discount) /
+                                            100;
+                                    @endphp
                                     <tr>
                                         <td>{{ $cart->id }}</td>
                                         <td>
@@ -66,14 +77,20 @@
                                                 width="100px" alt="">
                                         </td>
                                         <td>{{ $cart->qty }}</td>
-                                        <td>Rp {{ Number_format($cart->barangeven->so->hargamodal * 0.45 + $cart->barangeven->so->hargamodal * $cart->qty) }}</td>
+                                        <td>Rp
+                                            {{ Number_format($total = $cart->barangeven->so->hargamodal * 0.45 + $cart->barangeven->so->hargamodal * $cart->qty) }}
+                                        </td>
+                                        <td>Rp
+                                            {{ Number_format(($total * $cart->barangeven->discount) / 100) }}
+                                        </td>
 
                                         <td>
-                                            <form action="{{ url("addprod/$cart->id") }}" method="POST">
+                                            <form action="{{ url("deleteProds/$cart->id") }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <input type="number" name="qty" hidden value="{{ $cart->qty }}">
-                                                <input type="number" name="barangeven_id" hidden value="{{ $cart->barangeven_id }}">
+                                                <input type="number" name="barangeven_id" hidden
+                                                    value="{{ $cart->barangeven_id }}">
                                                 <button class="btn bg-danger delete-data" type="submit">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
@@ -87,7 +104,8 @@
                         </table>
                         <div class="d-flex p-2 justify-content-between" style="gap: 10px">
                             <div class="">
-                                <h5>Total: Rp {{ Number_format($total)}}</h5>
+                                <h5>Total: Rp {{ Number_format($totals) }}</h5>
+                                <h5>Discount: Rp {{ Number_format($discounts) }}</h5>
                             </div>
                             <div class="d-flex">
                                 <form action="{{ url('batalkan') }}" method="POST">
@@ -96,7 +114,11 @@
                                     <input type="number" name="eventId" hidden value="{{ $eventId }}">
                                     <button type="submit" class="btn delete-data btn-danger">Batalkan</button>
                                 </form>
-                                <button type="button" class="ms-2 btn btn-success">Selesai</button>
+                                <div class="">
+
+                                    <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal"
+                                        data-bs-target="#selesai">Selesai</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,6 +148,7 @@
                                     <th>foto</th>
                                     <th>Nama</th>
                                     <th>Harga modal + 45%</th>
+                                    <th>discount</th>
                                     <th>qty</th>
                                     <th>aksi</th>
                                 </tr>
@@ -139,7 +162,11 @@
                                         <td><img src="{{ asset('assets') }}/fotoSO/{{ $sos->so->foto }}" width="100px"
                                                 alt=""></td>
                                         <td>{{ $sos->so->nama }}</td>
-                                        <td>{{ $sos->so->hargamodal * 0.45 + $sos->so->hargamodal }}</td>
+                                        <td>
+                                            Rp
+                                            {{ number_format($harga = $sos->so->hargamodal * 0.45 + $sos->so->hargamodal) }}
+                                        </td>
+                                        <td>{{ number_format(($harga * $sos->discount) / 100) }}</td>
                                         <td>{{ $sos->qty }}</td>
 
                                         <td>
@@ -192,7 +219,6 @@
         function onEdit(btn, historyId) {
             const tr = btn.closest('tr');
             const tds = tr.querySelectorAll('td');
-
             // Logging untuk debugging
             console.log("Editing ID:", historyId);
             tds.forEach((td, index) => {
@@ -203,8 +229,8 @@
 
             // Mengisi input field
             document.getElementById('berangevent').value = tds[0].textContent.trim();
-            document.getElementById('jumlah').max = tds[6].textContent.trim();
-            document.getElementById('jumlah').placeholder = "Jumlah tersedia " + tds[6].textContent.trim();
+            document.getElementById('jumlah').max = tds[7].textContent.trim();
+            document.getElementById('jumlah').placeholder = "Jumlah tersedia " + tds[7].textContent.trim();
 
         }
     </script>

@@ -18,7 +18,7 @@ Route::get('/dashboard', function () {
     if (Auth::user()->role == 'karyawan') {
         return redirect('karyawan');
     } elseif (Auth::user()->role == 'admin') {
-        return redirect('admin-home');
+        return redirect('admin');
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -46,6 +46,8 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::get('event-karyawan', [eventController::class, 'karyawan']);
     Route::get('infoProd/{id}', [eventController::class, 'infoProd']);
     Route::post('addEventProd', [eventController::class, 'addEventProd']);
+    Route::post('addEventProd', [eventController::class, 'addEventProd']);
+    Route::delete('deleteProd/{id}', [eventController::class, 'destroyprod']);
     Route::post('infoProd/update/{id}', [eventController::class, 'updateinfo']);
 
 
@@ -55,10 +57,16 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::get('proses/{id}', [kasirController::class, 'proses']);
     Route::post('batalkan', [kasirController::class, 'batalkan']);
     Route::post('addprod', [kasirController::class, 'addprod']);
-    Route::delete('addprod/{id}', [kasirController::class, 'destroy']);
+    Route::delete('deleteProds/{id}', [kasirController::class, 'destroyprod']);
+    Route::post('selesaikan', [kasirController::class, 'done']);
+    Route::get('invoice/{id}', [kasirController::class, 'invoice']);
+    Route::get('print/{id}', [kasirController::class, 'print']);
 });
 Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('admin-home', [adminController::class, 'index']);
+    Route::get('admin', [adminController::class, 'index']);
+
+    Route::post('kembalikan', [eventController::class, 'kembalikan']);
+
 
     // event controller
     Route::get('event', [eventController::class, 'index']);

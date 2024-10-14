@@ -4,17 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Models\barangeven;
 use App\Models\event;
+use App\Models\penjualan;
 use App\Models\prosesco;
 use App\Models\so;
 use Illuminate\Http\Request;
 
 class eventController extends Controller
 {
+
+    // admin
     public function index()
     {
-        $data['events'] = event::get();
+        $data['events'] = Event::with(['barangeven', 'pesanan'])->with('barangeven')->get();
+
+        foreach ($data['events'] as $event) {
+            // Ambil semua id pesanan terkait event ini
+            $pesananIds = $event->pesanan->pluck('id')->toArray();
+
+            // Hitung total pendapatan dikurangi diskon dari penjualan
+            $event->total_pendapatan = Penjualan::whereIn('kodeInvoice', $pesananIds)
+                ->selectRaw('SUM(total - discount) as total_pendapatan')
+                ->value('total_pendapatan');
+
+            // Hitung total discount dari penjualan
+            $event->total_discount = Penjualan::whereIn('kodeInvoice', $pesananIds)
+                ->sum('discount');
+        }
+
         return view('admin.event.index')->with($data);
     }
+
+
+
+
+
+    // user
 
     public function create(Request $request)
     {
@@ -45,7 +69,8 @@ class eventController extends Controller
 
     public function addEventProd(Request $request)
     {
-        if (barangeven::where('id', $request->event_id)->where('so_id', $request->so_id)->first() != null) {
+
+        if (barangeven::where('event_id', $request->event_id)->where('so_id', $request->so_id)->first() != null) {
             return redirect('infoProd/' . $request->event_id)->with('error', 'Data tersebut sudah ditambahkan, anda bisa mengubahnya pada table di atas');
         }
         $so = so::where('id', $request->so_id)->first();
@@ -73,26 +98,26 @@ class eventController extends Controller
         $request->validate([
             'qty' => 'required',
         ]);
-    
+
         // Ambil data qty dari tabel `barangeven` dan `so`
         $barangeven = barangeven::where('id', $request->event_id)->first();
         $so = so::where('kode', $request->so_id)->first();
-    
+
         // Hitung total stok yang tersedia
         $totalQtyAvailable = $barangeven->qty + $so->qty;
-    
+
         // Cek apakah qty yang diinput melebihi stok
         if ($request->qty > $totalQtyAvailable) {
             return redirect()->back()->with('error', 'Jumlah yang diinput melebihi stok');
         }
-    
+
         // Hitung qty baru untuk tabel `so`
         if ($request->qty > $barangeven->qty) {
             $newSoQty = $so->qty - ($request->qty - $barangeven->qty);
         } else {
             $newSoQty = ($barangeven->qty - $request->qty) + $so->qty;
         }
-    
+
         // Update qty di tabel `so`
         $so->update(['qty' => $newSoQty]);
         // Update qty dan discount di tabel `barangeven`
@@ -102,5 +127,29 @@ class eventController extends Controller
         ]);
         return redirect()->back()->with('success', 'Data Berhasil di Update');
     }
-    
+
+
+    public function destroyprod($id)
+    {
+        $barangeven = barangeven::where('id', $id)->first();
+        $barangeven->so->update(['qty' => $barangeven->so->qty + $barangeven->qty]);
+        $barangeven->delete();
+        return redirect()->back()->with('success', 'Data Berhasil di Hapus');
+    }
+
+    public function kembalikan(Request $request)
+    {
+        $id = $request->id;
+        barangeven::where('event_id', $id)->get()->each(function ($barangeven) {
+            $so = so::where('id', $barangeven->so_id)->first();
+
+            if ($so) {
+                $so->update(['qty' => $so->qty + $barangeven->qty]);
+            }
+            $barangeven->delete();
+        });
+
+
+        return redirect()->back()->with('success', 'Data Berhasil di kembalikan');
+    }
 }

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\barangeven;
+use App\Models\penjualan;
 use App\Models\pesanan;
 use App\Models\prosesco;
 use App\Models\so;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 
 class kasirController extends Controller
@@ -15,14 +18,20 @@ class kasirController extends Controller
     {
         $data['eventId'] = $id;
         $data['pesanan'] = pesanan::where('event_id', $id)->with('prosesco')->get();
+        $data['pesanan']->each(function ($pesanan) {
+            if (penjualan::where('kodeInvoice', $pesanan->id)->first() == null) {
+                $pesanan->delete();
+            }
+        });
         return view('karyawan.event.kasir')->with($data);
     }
 
     public function addPesanan(Request $request)
     {
         $pesanan = pesanan::create($request->all());
-        return redirect('proses/' . $pesanan->id)->with('success', 'silahkan isi produk');
+        return redirect('proses/' . $pesanan->id)->with('success', 'silahkan isi produks');
     }
+
 
 
     public function proses($id)
@@ -67,5 +76,65 @@ class kasirController extends Controller
         return redirect('kasir/' . $request->eventId)->with('success', 'Data Berhasil di Hapus, dan mengembalikan ke Stok');
     }
 
+    public function done(Request $request)
+    {
+        $barangco =  prosesco::where('pesanan_id', $request->pesananId)->get();
+        if ($barangco->isEmpty()) {
+            return redirect()->back()->with('error', 'tidak ada barang yang di temukan');
+        }
+        foreach ($barangco as $c) {
+            $random = date('d') . time();
+            $barangeven = barangeven::where('id', $c->barangeven_id)->with('so')->first();
+            $uploadFoto = penjualan::create([
+                'so_id' => $barangeven->so->id,
+                'kodeInvoice' => $random,
+                'user_id' => Auth::user()->id,
+                'qty' => $c->qty,
+                'total' => $hargajual = $barangeven->so->hargamodal * 0.45 + $barangeven->so->hargamodal * $c->qty,
+                'discount' => $hargajual * $barangeven->discount / 100,
+                'jenis' => $request->jenis,
+            ]);
+            prosesco::where('id', $c->id)->delete();
+        }
 
+        $uploadFoto = penjualan::where('kodeInvoice', $uploadFoto->kodeInvoice)->first();
+
+
+        if ($request->bukti != null) {
+            $file = $request->file('bukti');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $ext;
+            $file->move('assets/pembayaran/', $filename);
+
+            $uploadFoto->update([
+                'bukti' => $filename
+            ]);
+        }
+
+
+        pesanan::where('id', $request->pesananId)->update([
+            'id' => $uploadFoto->kodeInvoice,
+        ]);
+        return redirect('kasir/' . $request->eventId)->with('success', 'Data Berhasil di Hapus, dan mengembalikan ke Stok');
+    }
+
+
+    public function invoice($id)
+    {
+        $data['id'] = $id;
+        $data['invoice'] = penjualan::where('kodeInvoice', $id)->with('so')->get();
+        $data['penjualan'] = penjualan::where('kodeInvoice', $id)->first();
+        if ($data['penjualan'] == null) {
+            return redirect()->back()->with('error', 'tidak ada barang yang di temukan');
+        }
+        $data['user'] = User::where('id', penjualan::where('kodeInvoice', $id)->first()->user_id)->first();
+
+        return view('karyawan.event.invoice.invoice')->with($data);
+    }
+    public function print($id)
+    {
+        $data['id'] = $id;
+        $data['invoice'] = penjualan::where('id', $id)->get();
+        return view('karyawan.event.invoice.invoiceprint')->with($data);
+    }
 }
