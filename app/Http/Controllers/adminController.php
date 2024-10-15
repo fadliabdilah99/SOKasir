@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\margin;
 use App\Models\penjualan;
+use App\Models\pesanan;
 use App\Models\so;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,10 +37,21 @@ class adminController extends Controller
             // Set nilai penjualan, jika tidak ada data penjualan set default 0
             $online[] = $salesData->get($month, 0);
         }
-
-        $data['pemasukanonline'] = penjualan::where('jenis', 'event')->whereMonth('created_at', '>=', date('m'))->sum('total');
+        $data['margin'] = margin::get();
+        $data['pesanan'] = penjualan::where('jenis', 'event')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->with('so')->get();
+        $data['pemasukanonline'] = $data['pesanan']->sum('total');
         $data['valuasi'] = So::select(DB::raw('sum(hargamodal * qty) as total'))->first()->total;
         $data['totalprod'] = so::sum('qty');
         return view('admin.home.index', compact('online', 'bulan'))->with($data);
+    }
+
+    public function margin(Request $request, $id){
+        $request->validate([
+            'margin' => 'required',
+        ]);
+
+        margin::where('id', $id)->update(['margin' => $request->margin]);
+
+        return redirect('admin')->with('success', 'Berhasil mengatur margin');
     }
 }

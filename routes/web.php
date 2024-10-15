@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\cartController;
 use App\Http\Controllers\eventController;
 use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kasirController;
@@ -61,9 +62,17 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::post('selesaikan', [kasirController::class, 'done']);
     Route::get('invoice/{id}', [kasirController::class, 'invoice']);
     Route::get('print/{id}', [kasirController::class, 'print']);
+
+    // cart manual
+    Route::get('cart', [cartController::class, 'index']);
+    Route::post('kasir2/{id}', [cartController::class, 'homekasir']);
+    Route::post('checkout', [CartController::class, 'checkout']);
+    Route::delete('checkout', [CartController::class, 'delete']);
+
 });
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin', [adminController::class, 'index']);
+    Route::post('margin/{id}', [adminController::class, 'margin']);
 
     Route::post('kembalikan', [eventController::class, 'kembalikan']);
 

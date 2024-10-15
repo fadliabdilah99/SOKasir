@@ -23,4 +23,9 @@ class so extends Model
     {
         return $this->hasMany(penjualan::class);
     }
+
+    public function chart()
+    {
+        return $this->hasMany(chart::class);
+    }
 }

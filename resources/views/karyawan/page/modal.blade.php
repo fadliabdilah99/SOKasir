@@ -7,11 +7,12 @@
             </div>
             <div class="card card-info">
                 <!-- form start -->
-                <form class="form-horizontal" id="modalFormSO" action="so" method="POST" enctype="multipart/form-data">
+                <form class="form-horizontal" id="modalFormSO" action="so" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="form-group row">
-                            <label for="kode"  class="col-sm-2 col-form-label">kode</label>
+                            <label for="kode" class="col-sm-2 col-form-label">kode</label>
                             <div class="col-sm-10">
                                 <input type="Number" name="kode" class="form-control" id="kodese"
                                     placeholder="Masukan Kode">
@@ -34,8 +35,7 @@
                             <div class="col-sm-10">
                                 <div class="input-group">
                                     <div class="custom-file">
-                                        <input type="file" name="foto" class="custom-file-input"
-                                            id="fotos">
+                                        <input type="file" name="foto" class="custom-file-input" id="fotos">
                                         <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                                     </div>
                                     <div class="input-group-append">
@@ -124,6 +124,82 @@
                                     placeholder="3 huruf" maxlength="3">
                             </div>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-info">Tambahkan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="checkout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-l">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title fs-5" id="exampleModalLabel">Kategori</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="card card-info">
+                <!-- form start -->
+                <form id="checkoutform" class="form-horizontal" action="kategori" method="POST">
+                    @csrf
+                    <!-- Field untuk menyimpan ID untuk keperluan edit -->
+                    <input type="hidden" name="hargamodal" id="SOmodals" value="POST">
+                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}"  value="POST">
+                    <div class="card-body">
+                        <div class="form-group row" hidden>
+                            <label for="name" class="col-sm-4 col-form-label">SO</label>
+                            <div class="col-sm-8">
+                                <input type="number" id="SoId" class="form-control" name="so_id"
+                                    placeholder="Kategori name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label">Harga modal</label>
+                            <div class="col-sm-8">
+                                <input type="number" disabled  id="SOmodal" class="form-control"
+                                    placeholder="Kategori name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label">Penanggung Jawab</label>
+                            <div class="col-sm-8">
+                                <input type="text" disabled value="{{ Auth::user()->name }}" 
+                                    id="SoId" class="form-control" placeholder="Kategori name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label">QTY</label>
+                            <div class="col-sm-8">
+                                <input type="number" id="SoQTY" name="qty" class="form-control"
+                                    placeholder="qty">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label">disc(opsional)</label>
+                            <div class="col-sm-8">
+                                <input type="number" maxlength="2" name="discount" class="form-control"
+                                    placeholder="presentase discount">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label">jenis</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;"
+                                    data-select2-id="1" tabindex="-1" aria-hidden="true" name="margin">
+                                    @foreach ($margins as $keuntungan)
+                                        <option value="{{ $keuntungan->id }}">{{ $keuntungan->jenis }}
+                                            {{ $keuntungan->margin }}%</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-info">Tambahkan</button>

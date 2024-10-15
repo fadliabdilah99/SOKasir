@@ -57,14 +57,15 @@
                                 @foreach ($cart as $cart)
                                     @php
                                         $totals +=
-                                            $cart->barangeven->so->hargamodal * 0.45 +
-                                            $cart->barangeven->so->hargamodal * $cart->qty;
+                                            (($cart->barangeven->so->hargamodal * $margin) / 100 +
+                                                $cart->barangeven->so->hargamodal) *
+                                            $cart->qty;
 
                                         $discounts +=
-                                            ($cart->barangeven->so->hargamodal * 0.45 +
-                                                $cart->barangeven->so->hargamodal *
-                                                    $cart->qty *
-                                                    $cart->barangeven->discount) /
+                                            ((($cart->barangeven->so->hargamodal * $margin) / 100 +
+                                                $cart->barangeven->so->hargamodal) *
+                                                $cart->qty *
+                                                $cart->barangeven->discount) /
                                             100;
                                     @endphp
                                     <tr>
@@ -78,7 +79,7 @@
                                         </td>
                                         <td>{{ $cart->qty }}</td>
                                         <td>Rp
-                                            {{ Number_format($total = $cart->barangeven->so->hargamodal * 0.45 + $cart->barangeven->so->hargamodal * $cart->qty) }}
+                                            {{ Number_format($total = (($cart->barangeven->so->hargamodal * $margin) / 100 + $cart->barangeven->so->hargamodal) * $cart->qty) }}
                                         </td>
                                         <td>Rp
                                             {{ Number_format(($total * $cart->barangeven->discount) / 100) }}
@@ -147,7 +148,7 @@
                                     <th>Kategori</th>
                                     <th>foto</th>
                                     <th>Nama</th>
-                                    <th>Harga modal + 45%</th>
+                                    <th>Harga modal + {{ $margin }}%</th>
                                     <th>discount</th>
                                     <th>qty</th>
                                     <th>aksi</th>
@@ -164,7 +165,7 @@
                                         <td>{{ $sos->so->nama }}</td>
                                         <td>
                                             Rp
-                                            {{ number_format($harga = $sos->so->hargamodal * 0.45 + $sos->so->hargamodal) }}
+                                            {{ number_format($harga = ($sos->so->hargamodal * $margin) / 100 + $sos->so->hargamodal) }}
                                         </td>
                                         <td>{{ number_format(($harga * $sos->discount) / 100) }}</td>
                                         <td>{{ $sos->qty }}</td>

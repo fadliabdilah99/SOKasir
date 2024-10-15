@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\barangeven;
+use App\Models\chart;
+use App\Models\margin;
 use App\Models\penjualan;
 use App\Models\pesanan;
 use App\Models\prosesco;
 use App\Models\so;
 use App\Models\User;
+use Dotenv\Util\Regex;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
@@ -20,6 +23,12 @@ class kasirController extends Controller
         $data['pesanan'] = pesanan::where('event_id', $id)->with('prosesco')->get();
         $data['pesanan']->each(function ($pesanan) {
             if (penjualan::where('kodeInvoice', $pesanan->id)->first() == null) {
+                $prosesco = prosesco::where('pesanan_id', $pesanan->id)->get();
+                foreach ($prosesco as $proses) {
+                    $barangeven = barangeven::where('id', $proses->barangeven_id)->first();
+                    $newqty = $barangeven->qty + $proses->qty;
+                    $barangeven->update(['qty' => $newqty]);
+                }
                 $pesanan->delete();
             }
         });
@@ -36,6 +45,7 @@ class kasirController extends Controller
 
     public function proses($id)
     {
+        $data['margin'] = margin::where('jenis', 'event')->first()->margin;
         $data['eventId'] = pesanan::where('id', $id)->first()->event_id;
         $data['pesananId'] = $id;
         $data['barangs'] = barangeven::where('event_id', $data['eventId'])->with('so')->get();
@@ -78,6 +88,7 @@ class kasirController extends Controller
 
     public function done(Request $request)
     {
+        $margin = margin::where('jenis', 'event')->first()->margin;
         $barangco =  prosesco::where('pesanan_id', $request->pesananId)->get();
         if ($barangco->isEmpty()) {
             return redirect()->back()->with('error', 'tidak ada barang yang di temukan');
@@ -90,7 +101,7 @@ class kasirController extends Controller
                 'kodeInvoice' => $random,
                 'user_id' => Auth::user()->id,
                 'qty' => $c->qty,
-                'total' => $hargajual = $barangeven->so->hargamodal * 0.45 + $barangeven->so->hargamodal * $c->qty,
+                'total' => $hargajual = (($barangeven->so->hargamodal * $margin) / 100 + $barangeven->so->hargamodal) *  $c->qty,
                 'discount' => $hargajual * $barangeven->discount / 100,
                 'jenis' => $request->jenis,
             ]);
@@ -137,4 +148,7 @@ class kasirController extends Controller
         $data['invoice'] = penjualan::where('id', $id)->get();
         return view('karyawan.event.invoice.invoiceprint')->with($data);
     }
+
+
+
 }

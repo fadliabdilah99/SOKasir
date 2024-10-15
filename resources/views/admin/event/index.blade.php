@@ -6,9 +6,9 @@
     {{-- SweetAlert2 --}}
     <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <!-- DataTables -->
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 @endpush
 
 @section('content')
@@ -102,6 +102,8 @@
 {{-- content --}}
 
 @push('script')
+
+
     {{-- sweetalert2 --}}
     <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- DataTables  & Plugins -->
@@ -117,6 +119,26 @@
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    @if ($message = Session::get('success'))
+        <script>
+            Swal.fire({
+                title: "Berhasil!",
+                text: "{{ $message }}",
+                icon: "success"
+            });
+        </script>
+    @endif
+    @if ($message = Session::get('error'))
+        <script>
+            Swal.fire({
+                title: "gagal!",
+                text: "{{ $message }}",
+                icon: "error"
+            });
+        </script>
+    @endif
+
 
     <!-- Page specific script -->
     <script>
@@ -174,4 +196,5 @@
                 })
         });
     </script>
+
 @endpush

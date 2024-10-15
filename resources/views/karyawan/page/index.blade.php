@@ -59,6 +59,7 @@
                         <table id="example1" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
+                                    <th>Id</th>
                                     <th>Kode</th>
                                     <th>Kategori</th>
                                     <th>foto</th>
@@ -72,6 +73,7 @@
                             <tbody>
                                 @foreach ($so as $sos)
                                     <tr>
+                                        <td>{{ $sos->id }}</td>
                                         <td>{{ $sos->kode }}</td>
                                         <td>{{ $sos->kategori->name }}</td>
                                         <td><img src="assets/fotoSO/{{ $sos->foto }}" width="100px" alt=""></td>
@@ -81,15 +83,19 @@
                                         <td>{{ $sos->qty }}</td>
 
                                         <td>
+                                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                                data-bs-target="#checkout" onclick="checkouts(this, {{ $sos->id }})">
+                                                <i class="fas fa-shopping-cart"></i>
+                                            </button>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#addso" onclick="onEdits(this, {{ $sos->id }})">
-                                                Edit
+                                                <i class="fas fa-edit"></i>
                                             </button>
                                             <form action="{{ url("so/$sos->id") }}" method="POST" style="display: inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn bg-danger delete-data" type="button">
-                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </td>
@@ -157,6 +163,13 @@
         </div>
         <!-- /.content -->
     </div>
+
+    <div style="position: fixed; right: 20px; bottom: 60px;">
+        <a href="{{ url('cart') }}" class="btn-floating btn-large bg-success p-3 rounded-circle m-5 red">
+            <i class="fas fa-cart-plus"></i>
+        </a>
+    </div>
+    
     <!-- /.content-wrapper -->
 
     <!-- Control Sidebar -->
@@ -207,27 +220,50 @@
         }
     </script>
 
+    {{-- edit SO --}}
     <script>
         function onEdits(btn, historyId) {
             const tr = btn.closest('tr');
             const tds = tr.querySelectorAll('td');
 
-            // Logging untuk debugging
-            console.log("Editing ID:", historyId);
-            tds.forEach((td, index) => {
-                console.log(`td[${index}]:`, td.textContent.trim());
-            }); 
+            
 
             // Mengisi input field
-            document.getElementById('namas').value = tds[3].textContent.trim(); // nama
-            document.getElementById('deskripsis').value = tds[4].textContent.trim(); // deskripsi
-            document.getElementById('hargamodals').value = tds[5].textContent.trim(); // harga modal
-            document.getElementById('qtys').value = tds[6].textContent.trim(); // qty
+            document.getElementById('namas').value = tds[2].textContent.trim(); // nama
+            document.getElementById('deskripsis').value = tds[5].textContent.trim(); // deskripsi
+            document.getElementById('hargamodals').value = tds[6].textContent.trim(); // harga modal
+            document.getElementById('qtys').value = tds[7].textContent.trim(); // qty
             document.getElementById('keterangans').placeholder = "Kosongkan jika tidak di ubah";
             document.getElementById('kodese').placeholder = "kosongkan jika tidak di ubah";
 
             // Set action URL untuk update
             document.getElementById('modalFormSO').action = `updateSO/${historyId}`; // URL untuk mengupdate
+            console.log("Form action set to:", document.getElementById('modalFormSO').action);
+        }
+    </script>
+
+    <script>
+        function checkouts(btn, soId) {
+            console.log('hello');
+            const tr = btn.closest('tr');
+            const tds = tr.querySelectorAll('td');
+
+            // Logging untuk debugging
+            console.log("Editing ID:", soId);
+            tds.forEach((td, index) => {
+                console.log(`td[${index}]:`, td.textContent.trim());
+            });
+
+            // Mengisi input field
+            document.getElementById('SoId').value = tds[0].textContent.trim(); 
+            document.getElementById('SOmodal').value = tds[6].textContent.trim(); 
+            document.getElementById('SOmodals').value = tds[6].textContent.trim(); 
+            document.getElementById('SoQTY').placeholder = "Maximal " + tds[7].textContent.trim();
+            document.getElementById('SoQTY').max = tds[7].textContent.trim();
+
+
+            // Set action URL untuk update
+            document.getElementById('checkoutform').action = `kasir2/${soId}`; // URL untuk mengupdate
             console.log("Form action set to:", document.getElementById('modalFormSO').action);
         }
     </script>
