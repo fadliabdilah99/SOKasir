@@ -33,7 +33,8 @@
                             <div class="row">
                                 <div class="col-12">
                                     <h4>
-                                        <i class="fas fa-globe"></i> V&P invoice
+                                        <img src="{{ asset('assets') }}/asset/logo.png" width="50" alt="">
+                                        V&P invoice
                                         <small class="float-right">Date: {{ $penjualan->created_at }}</small>
                                     </h4>
                                 </div>
@@ -89,14 +90,14 @@
                                             @foreach ($invoice as $item)
                                                 @php
                                                     $dis += $item->discount;
-                                                    $total += $item->total;
+                                                    $total += $item->total  ;
                                                 @endphp
                                                 <tr>
-                                                    <td>{{$item->qty}}</td>
-                                                    <td>{{$item->so->nama}}</td>
-                                                    <td>{{$item->so->kategori->name}}</td>
-                                                    <td>{{$item->so->deskripsi}}</td>
-                                                    <td>Rp {{number_format($item->total)}}</td>
+                                                    <td>{{ $item->qty }}</td>
+                                                    <td>{{ $item->so->nama }}</td>
+                                                    <td>{{ $item->so->kategori->name }}</td>
+                                                    <td>{{ $item->so->deskripsi }}</td>
+                                                    <td>Rp {{ number_format($item->total + $item->discount  ) }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -117,11 +118,12 @@
                                         plugg
                                         dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
                                     </p>
-                                    <h1 class="text-success well well-sm text-center shadow-none" style="margin-top: 10px; border: 1px solid #4cae4c;">
+                                    <h1 class="text-success well well-sm text-center shadow-none"
+                                        style="margin-top: 10px; border: 1px solid #4cae4c;">
                                         <strong>LUNAS</strong>
                                     </h1>
                                     <p>penganggung jawab : {{ $user->name }}</p>
-                                    
+
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-6">
@@ -131,15 +133,15 @@
                                         <table class="table">
                                             <tr>
                                                 <th>Total:</th>
-                                                <td>Rp {{number_format($total)}}</td>
+                                                <td>Rp {{ number_format($total + $dis) }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Discount:</th>
-                                                <td>Rp - {{number_format($dis)}}</td>
+                                                <td>Rp - {{ number_format($dis) }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Total:</th>
-                                                <td>Rp {{number_format($total - $dis)}}</td>
+                                                <td>Rp {{ number_format($total) }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -159,8 +161,8 @@
                         <!-- /.invoice -->
                     </div><!-- /.col -->
                 </div><!-- /.row -->
+            </section>
         </div><!-- /.container-fluid -->
-        </section>
         <!-- /.content -->
     </div>
 

@@ -46,7 +46,7 @@
             <!-- small box -->
             <div class="small-box bg-secondary">
                 <div class="inner">
-                    <h3>44</h3>
+                    <h3>{{ 'Rp ' . Number_format($pemasukanonline, 0, ',', '.') }}</h3>
 
                     <p>Penjualan online</p>
                 </div>
@@ -61,7 +61,7 @@
             <!-- small box -->
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ 'Rp ' . Number_format($pemasukanonline) }}</h3>
+                    <h3>{{ 'Rp ' . Number_format($pemasukanoffline, 0, ',', '.') }}</h3>
 
                     <p>Penjualan offline</p>
                 </div>
@@ -74,9 +74,11 @@
         <!-- ./col -->
     </div>
     <!-- AREA CHART -->
-    <div class="card card-primary">
+    <div class="card card-dark">
         <div class="card-header">
-            <h3 class="card-title">Area Chart</h3>
+            <h3 class="card-title">Area Chart</h3> <br>
+            <button class="btn btn-primary" type="button"></button> penjualan Offline <br>
+            <button class="btn btn-secondary" type="button"></button> penjualan Online
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -117,7 +119,7 @@
                                 <tr>
                                     <th>Item</th>
                                     <th>qty</th>
-                                    <th>pemasukan-dis</th>
+                                    <th>pemasukan bersih</th>
                                     <th>jenis transaksi</th>
                                 </tr>
                             </thead>
@@ -136,7 +138,7 @@
                                             {{ $pendapatans->qty }}
                                         </td>
                                         <td>
-                                            {{ Number_format($pendapatans->total - $pendapatans->discount) }}
+                                            {{ Number_format($pendapatans->total) }}
                                         </td>
                                         <td>
                                             {{ $pendapatans->jenis }}
@@ -244,7 +246,7 @@
         var areaChartData = {
             labels: @json($bulan), // Labels dinamis sesuai 6 bulan terakhir
             datasets: [{
-                    label: 'online',
+                    label: 'offline',
                     backgroundColor: 'rgba(60,141,188,0.9)',
                     borderColor: 'rgba(60,141,188,0.8)',
                     pointRadius: false,
@@ -252,10 +254,10 @@
                     pointStrokeColor: 'rgba(60,141,188,1)',
                     pointHighlightFill: '#fff',
                     pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data: @json($online) // Data penjualan sesuai dengan bulan
+                    data: @json($offline) // Data penjualan sesuai dengan bulan
                 },
                 {
-                    label: 'Electronics',
+                    label: 'Online',
                     backgroundColor: 'rgba(210, 214, 222, 1)',
                     borderColor: 'rgba(210, 214, 222, 1)',
                     pointRadius: false,
@@ -263,7 +265,7 @@
                     pointStrokeColor: '#c1c7d1',
                     pointHighlightFill: '#fff',
                     pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data: [700000, 400000, 600000, 500000, 600000, 555000]
+                    data: @json($online) // Data penjualan sesuai dengan bulan
                 },
             ]
         }

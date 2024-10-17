@@ -7,6 +7,7 @@ use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kasirController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\shopController;
 use App\Http\Controllers\soController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,8 @@ Route::get('/dashboard', function () {
         return redirect('karyawan');
     } elseif (Auth::user()->role == 'admin') {
         return redirect('admin');
+    }elseif (Auth::user()->role == 'user') {
+        
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -47,7 +50,6 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::get('event-karyawan', [eventController::class, 'karyawan']);
     Route::get('infoProd/{id}', [eventController::class, 'infoProd']);
     Route::post('addEventProd', [eventController::class, 'addEventProd']);
-    Route::post('addEventProd', [eventController::class, 'addEventProd']);
     Route::delete('deleteProd/{id}', [eventController::class, 'destroyprod']);
     Route::post('infoProd/update/{id}', [eventController::class, 'updateinfo']);
 
@@ -68,6 +70,11 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::post('kasir2/{id}', [cartController::class, 'homekasir']);
     Route::post('checkout', [CartController::class, 'checkout']);
     Route::delete('checkout', [CartController::class, 'delete']);
+
+    // shop controller
+    Route::get('shop', [shopController::class, 'index']);
+    Route::post('shop', [shopController::class, 'add']);
+    Route::post('updateshop/{id}', [shopController::class, 'update']);
 
 });
 Route::group(['middleware' => ['role:admin']], function () {

@@ -19,6 +19,9 @@
                     <a href="{{url('profile')}}" class="nav-link">Profile</a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{url('shop')}}" class="btn btn-success me-2">Shop</a>
+                </li>
+                <li class="nav-item">
                     <a href="{{url('event-karyawan')}}" class="btn btn-info me-2">event</a>
                 </li>
                 <li class="nav-item">

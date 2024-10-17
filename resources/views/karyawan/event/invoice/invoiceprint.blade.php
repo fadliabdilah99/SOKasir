@@ -33,8 +33,8 @@
                             <div class="row">
                                 <div class="col-12">
                                     <h4>
-                                        <i class="fas fa-globe"></i> AdminLTE, Inc.
-                                        <small class="float-right">Date: 2/10/2014</small>
+                                        <img src="{{ asset('assets') }}/asset/logo.png" width="50" alt=""> V&P invoice
+                                        <small class="float-right">Date: {{ $penjualan->created_at }}</small>
                                     </h4>
                                 </div>
                                 <!-- /.col -->
@@ -44,31 +44,25 @@
                                 <div class="col-sm-4 invoice-col">
                                     From
                                     <address>
-                                        <strong>Admin, Inc.</strong><br>
-                                        795 Folsom Ave, Suite 600<br>
-                                        San Francisco, CA 94107<br>
-                                        Phone: (804) 123-5432<br>
-                                        Email: info@almasaeedstudio.com
+                                        <strong>{{ $user->role }}|{{ $user->name }}.</strong><br>
+                                        {{ $user->email }}<br>
+                                        Id user = {{ $user->id }}<br>
                                     </address>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
                                     To
                                     <address>
-                                        <strong>John Doe</strong><br>
-                                        795 Folsom Ave, Suite 600<br>
-                                        San Francisco, CA 94107<br>
-                                        Phone: (555) 539-1037<br>
-                                        Email: john.doe@example.com
+                                        <strong>Pembeli</strong><br>
+                                        {{ $penjualan->jenis }}
                                     </address>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
-                                    <b>Invoice #007612</b><br>
+                                    <b>Invoice #{{ $id }}</b><br>
                                     <br>
-                                    <b>Order ID:</b> 4F3S8J<br>
-                                    <b>Payment Due:</b> 2/22/2014<br>
-                                    <b>Account:</b> 968-34567
+                                    <b>Order ID:</b> {{ $penjualan->id }}<br>
+                                    <b>Tanggal Transaksi: {{ $penjualan->created_at }}</b> <br>
                                 </div>
                                 <!-- /.col -->
                             </div>
@@ -80,6 +74,7 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
+                                                <th>Harga</th>
                                                 <th>Qty</th>
                                                 <th>Product</th>
                                                 <th>Serial #</th>
@@ -87,35 +82,25 @@
                                                 <th>Subtotal</th>
                                             </tr>
                                         </thead>
+                                        @php
+                                            $total = 0;
+                                            $dis = 0;
+                                        @endphp
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Call of Duty</td>
-                                                <td>455-981-221</td>
-                                                <td>El snort testosterone trophy driving gloves handsome</td>
-                                                <td>$64.50</td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Need for Speed IV</td>
-                                                <td>247-925-726</td>
-                                                <td>Wes Anderson umami biodiesel</td>
-                                                <td>$50.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Monsters DVD</td>
-                                                <td>735-845-642</td>
-                                                <td>Terry Richardson helvetica tousled street art master</td>
-                                                <td>$10.70</td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Grown Ups Blue Ray</td>
-                                                <td>422-568-642</td>
-                                                <td>Tousled lomo letterpress</td>
-                                                <td>$25.99</td>
-                                            </tr>
+                                            @foreach ($invoice as $item)
+                                                @php
+                                                    $dis += $item->discount;
+                                                    $total += $item->total;
+                                                @endphp
+                                                <tr>
+                                                    <td>{{ $item-> }}</td>
+                                                    <td>{{ $item->qty }}</td>
+                                                    <td>{{ $item->so->nama }}</td>
+                                                    <td>{{ $item->so->kategori->name }}</td>
+                                                    <td>{{ $item->so->deskripsi }}</td>
+                                                    <td>Rp {{ number_format($item->total + $item->discount) }}</td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -127,11 +112,6 @@
                                 <!-- accepted payments column -->
                                 <div class="col-6">
                                     <p class="lead">Payment Methods:</p>
-                                    <img src="{{ asset('dist') }}/img/credit/visa.png" alt="Visa">
-                                    <img src="{{ asset('dist') }}/img/credit/mastercard.png" alt="Mastercard">
-                                    <img src="{{ asset('dist') }}/img/credit/american-express.png"
-                                        alt="American Express">
-                                    <img src="{{ asset('dist') }}/img/credit/paypal2.png" alt="Paypal">
 
                                     <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
                                         Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning
@@ -139,6 +119,12 @@
                                         plugg
                                         dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
                                     </p>
+                                    <h1 class="text-success well well-sm text-center shadow-none"
+                                        style="margin-top: 10px; border: 1px solid #4cae4c;">
+                                        <strong>LUNAS</strong>
+                                    </h1>
+                                    <p>penganggung jawab : {{ $user->name }}</p>
+
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-6">
@@ -147,20 +133,16 @@
                                     <div class="table-responsive">
                                         <table class="table">
                                             <tr>
-                                                <th style="width:50%">Subtotal:</th>
-                                                <td>$250.30</td>
+                                                <th>Total:</th>
+                                                <td>Rp {{ number_format($total + $dis) }}</td>
                                             </tr>
                                             <tr>
-                                                <th>Tax (9.3%)</th>
-                                                <td>$10.34</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Shipping:</th>
-                                                <td>$5.80</td>
+                                                <th>Discount:</th>
+                                                <td>Rp - {{ number_format($dis) }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Total:</th>
-                                                <td>$265.24</td>
+                                                <td>Rp {{ number_format($total) }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -168,20 +150,12 @@
                                 <!-- /.col -->
                             </div>
                             <!-- /.row -->
-
-                            <!-- this row will not appear when printing -->
-                            <div class="row no-print">
-                                <div class="col-12">
-                                    <a href="{{ url('print/' . $id) }}" rel="noopener" target="_blank"
-                                        class="btn btn-default"><i class="fas fa-print"></i> Print</a>
-                                </div>
-                            </div>
                         </div>
                         <!-- /.invoice -->
                     </div><!-- /.col -->
                 </div><!-- /.row -->
+            </section>
         </div><!-- /.container-fluid -->
-        </section>
         <!-- /.content -->
     </div>
 

@@ -45,13 +45,33 @@ class cartController extends Controller
 
     public function delete(Request $request)
     {
-        $id = $request->id;
-        $cart = chart::where('id', $id)->first();
-        $so = so::where('id', $cart->so_id)->first();
-        $qtynew = $so->qty + $cart->qty;
-        so::where('id', $cart->so_id)->update(['qty' => $qtynew]);
-        $cart->delete();
-        return redirect()->back()->with('success', 'Data Berhasil di Hapus');
+        // Validasi bahwa setidaknya satu item dipilih
+        $request->validate([
+            'selected_items' => 'required|array|min:1',
+        ]);
+
+        // Ambil semua ID item yang dipilih
+        $selectedItems = $request->input('selected_items');
+
+        // Loop melalui setiap ID yang dipilih
+        foreach ($selectedItems as $id) {
+            $cart = Chart::where('id', $id)->first();
+            if ($cart) {
+                // Cari barang yang terkait di tabel `so`
+                $so = So::where('id', $cart->so_id)->first();
+                if ($so) {
+                    // Update jumlah stok pada tabel `so`
+                    $so->qty += $cart->qty;
+                    $so->save();
+                }
+
+                // Hapus item dari tabel cart
+                $cart->delete();
+            }
+        }
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Selected items have been deleted successfully.');
     }
     public function checkout(Request $request)
     {
@@ -67,7 +87,7 @@ class cartController extends Controller
                 'kodeInvoice' => $kode,
                 'user_id' => Auth::user()->id,
                 'qty' => $carts->qty,
-                'total' => $carts->total,
+                'total' => $carts->total - $carts->discount,
                 'discount' => $carts->discount,
                 'jenis' => $carts->margin,
             ]);

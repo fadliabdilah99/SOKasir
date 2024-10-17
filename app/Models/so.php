@@ -28,4 +28,8 @@ class so extends Model
     {
         return $this->hasMany(chart::class);
     }
+
+    public function shop(){
+        return $this->belongsTo(shop::class);
+    }
 }

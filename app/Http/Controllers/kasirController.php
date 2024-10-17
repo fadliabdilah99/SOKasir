@@ -96,13 +96,15 @@ class kasirController extends Controller
         foreach ($barangco as $c) {
             $random = date('d') . time();
             $barangeven = barangeven::where('id', $c->barangeven_id)->with('so')->first();
+            $hargajual = (($barangeven->so->hargamodal * $margin) / 100 + $barangeven->so->hargamodal) *  $c->qty;
+            $discount = $hargajual * $barangeven->discount / 100;
             $uploadFoto = penjualan::create([
                 'so_id' => $barangeven->so->id,
                 'kodeInvoice' => $random,
                 'user_id' => Auth::user()->id,
                 'qty' => $c->qty,
-                'total' => $hargajual = (($barangeven->so->hargamodal * $margin) / 100 + $barangeven->so->hargamodal) *  $c->qty,
-                'discount' => $hargajual * $barangeven->discount / 100,
+                'total' => $hargajual - $discount,
+                'discount' => $discount,
                 'jenis' => $request->jenis,
             ]);
             prosesco::where('id', $c->id)->delete();
@@ -145,10 +147,12 @@ class kasirController extends Controller
     public function print($id)
     {
         $data['id'] = $id;
-        $data['invoice'] = penjualan::where('id', $id)->get();
+        $data['invoice'] = penjualan::where('kodeInvoice', $id)->with('so')->get();
+        $data['penjualan'] = penjualan::where('kodeInvoice', $id)->first();
+        if ($data['penjualan'] == null) {
+            return redirect()->back()->with('error', 'tidak ada barang yang di temukan');
+        }
+        $data['user'] = User::where('id', penjualan::where('kodeInvoice', $id)->first()->user_id)->first();
         return view('karyawan.event.invoice.invoiceprint')->with($data);
     }
-
-
-
 }

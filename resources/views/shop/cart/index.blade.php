@@ -33,7 +33,7 @@
                 <!-- Iterate over cart items -->
                 @foreach ($carts as $cart)
                     <div class="card mb-3">
-                        <div class="d-flex align-items-center px-3 justify-content-between" >
+                        <div class="d-flex align-items-center px-3 justify-content-between">
                             <div class="d-flex align-items-center">
                                 <!-- Checkbox to select individual items -->
                                 <input type="checkbox" name="selected_items[]" value="{{ $cart->id }}"
@@ -42,8 +42,8 @@
                                     alt="" height="100" width="100" class="mr-3" />
                                 <div class="card-body">
                                     <h6 class="card-title">{{ $cart->so->nama }}</h6>
-                                    <p class="card-text">Price: Rp {{ number_format($cart->total) }} | discount : {{number_format($cart->discount)}}</p>
-
+                                    <p class="card-text">Price: Rp {{ number_format($cart->total) }} | discount :
+                                        {{ number_format($cart->discount) }}</p>
                                     <p class="card-text">Qty : {{ $cart->qty }}</p>
                                 </div>
                             </div>
@@ -60,7 +60,10 @@
                     <!-- Total Price -->
                     <h5>Total: Rp <span id="total-price">0</span></h5>
                     <!-- Checkout Button -->
-                    <button type="submit" form="cart-form" class="btn btn-primary">Checkout</button>
+                    <div class="">
+                        <button type="button" id="delete-button" class=" btn btn-danger">Delete</button>
+                        <button type="submit" id="checkout-button" form="cart-form" class="btn btn-primary">Checkout</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,6 +72,43 @@
 @endsection
 
 @push('script')
+
+    <script>
+        document.getElementById('delete-button').addEventListener('click', function() {
+            // Change the form method to DELETE
+            var form = document.getElementById('cart-form');
+
+            // Create a hidden input for the DELETE method
+            var deleteInput = document.createElement('input');
+            deleteInput.setAttribute('type', 'hidden');
+            deleteInput.setAttribute('name', '_method');
+            deleteInput.setAttribute('value', 'DELETE');
+
+            form.appendChild(deleteInput);
+
+            // Submit the form
+            form.submit();
+        });
+    </script>
+    <script>
+        document.getElementById('checkout-button').addEventListener('click', function() {
+            // Change the form method to DELETE
+            var form = document.getElementById('cart-form');
+
+            // Create a hidden input for the DELETE method
+            var deleteInput = document.createElement('input');
+            deleteInput.setAttribute('type', 'hidden');
+            deleteInput.setAttribute('name', '_method');
+            deleteInput.setAttribute('value', 'POST');
+
+            form.appendChild(deleteInput);
+
+            // Submit the form
+            form.submit();
+        });
+    </script>
+
+
     @include('karyawan.event.script')
 
     {{-- sweetalert2 --}}

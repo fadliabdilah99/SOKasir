@@ -101,7 +101,7 @@ class eventController extends Controller
 
         // Ambil data qty dari tabel `barangeven` dan `so`
         $barangeven = barangeven::where('id', $request->event_id)->first();
-        $so = so::where('kode', $request->so_id)->first();
+        $so = so::where('kode', $request->kode)->first();
 
         // Hitung total stok yang tersedia
         $totalQtyAvailable = $barangeven->qty + $so->qty;
