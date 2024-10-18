@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\barangeven;
 use App\Models\margin;
 use App\Models\penjualan;
 use App\Models\pesanan;
+use App\Models\shop;
 use App\Models\so;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -51,12 +53,32 @@ class adminController extends Controller
         $data['pemasukanonline'] = $data['pesanan']->where('jenis', 'online')->sum('total');
         $julmahofline = $data['pesanan']->where('jenis', 'ofline')->sum('total') + $data['pesanan']->where('jenis', 'event')->sum('total');
         $data['pemasukanoffline'] = $julmahofline;
-        $data['valuasi'] = So::select(DB::raw('sum(hargamodal * qty) as total'))->first()->total;
+
+
+        $data['valuasi'] = So::select(DB::raw('sum(hargamodal * qty) as total_so'))
+            ->first()
+            ->total_so;
+
+        // Valuasi dari tabel `shops`
+        $data['valuasi_shop'] = Shop::join('sos', 'shops.so_id', '=', 'sos.id')
+            ->select(DB::raw('sum((sos.hargamodal * shops.qty) * (1 - (shops.discount / 100))) as total_shop'))
+            ->first()
+            ->total_shop;
+
+        // Valuasi dari tabel `barangevens`
+        $data['valuasi_event'] = barangeven::join('sos', 'barangevens.so_id', '=', 'sos.id')
+            ->select(DB::raw('sum((sos.hargamodal * barangevens.qty) * (1 - (barangevens.discount / 100))) as total_event'))
+            ->first()
+            ->total_event;
+
+        // Total valuasi dari ketiga tabel
+        $data['valuasi'] = $data['valuasi'] + $data['valuasi_shop'] + $data['valuasi_event'];
         $data['totalprod'] = so::sum('qty');
         return view('admin.home.index', compact('offline', 'online', 'bulan'))->with($data);
     }
 
-    public function margin(Request $request, $id){
+    public function margin(Request $request, $id)
+    {
         $request->validate([
             'margin' => 'required',
         ]);

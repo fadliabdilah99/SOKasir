@@ -17,4 +17,8 @@ class shop extends Model
     public function so(){
         return $this->belongsTo(so::class);
     }
+
+    public function kategori(){
+        return $this->belongsTo(kategori::class);
+    }
 }

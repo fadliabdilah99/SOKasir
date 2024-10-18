@@ -12,16 +12,18 @@ class shopController extends Controller
     public function index()
     {
         $data['so'] = so::with('kategori')->get();
-        $data['barangs'] = shop::with('so')->with('foto')->get();
+        $data['barangs'] = shop::with('so')->with('kategori')->with('foto')->get();
         return view('karyawan.shop.index')->with($data);
     }
 
     public function add(Request $request)
     {
+
         $request->validate([
             'qty' => 'required',
-            'foto.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'foto.*' => 'required|image',
         ]);
+
         if (shop::where('so_id', $request->so_id)->first() != null) {
             return redirect()->back()->with('error', 'Data tersebut sudah ditambahkan, anda bisa mengubahnya pada table di atas');
         }
@@ -29,8 +31,10 @@ class shopController extends Controller
         $qtynew = $so->qty - $request->qty;
         $shop = shop::create([
             'so_id' => $request->so_id,
+            'kategori_id' => $request->kategori_id,
             'qty' => $request->qty,
             'discount' => $request->discount,
+            'deskripsi' => $request->deskripsi,
         ]);
         so::where('id', $request->so_id)->update(['qty' => $qtynew]);
 
@@ -102,9 +106,17 @@ class shopController extends Controller
                 ]);
             }
         }
-
-
-
         return redirect()->back()->with('success', 'Data Berhasil di Update');
+    }
+
+    public function delete($id)
+    {
+        shop::where('id', $id)->delete();
+        $foto = foto::where('shop_id', $id)->get();
+        foreach ($foto as $f) {
+            unlink('assets/asset/' . $f->fotos);
+            $f->delete();
+        }
+        return redirect()->back()->with('success', 'Data Berhasil di Hapus');
     }
 }

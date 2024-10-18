@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\barangeven;
+use App\Models\foto;
 use App\Models\kategori;
+use App\Models\shop;
 use App\Models\so;
 use Illuminate\Http\Request;
 
@@ -90,6 +93,20 @@ class soController extends Controller
 
     public function destroy($id)
     {
+        $shop = shop::where('so_id', $id)->get();
+        foreach ($shop as $s) {
+            $fotos = foto::where('shop_id', $shop->id)->get();
+            foreach ($fotos as $foto) {
+                // Hapus setiap file foto
+                if (file_exists('assets/asset/' . $foto->fotos)) {
+                    unlink('assets/asset/' . $foto->fotos);
+                }
+                // Hapus data foto
+                $foto->delete();
+            }
+            $s->delete();
+        }
+        barangeven::where('so_id', $id)->delete();
         $so = so::where('id', $id)->first();
         unlink('assets/fotoSO/' . $so->foto);
         so::where('id', $id)->delete();

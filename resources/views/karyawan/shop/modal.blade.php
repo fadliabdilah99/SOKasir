@@ -9,6 +9,7 @@
                 <form action="{{ url('shop') }}" method="POST" id="modaledit" enctype="multipart/form-data">
                     @csrf
                     <input type="number" name="so_id" id="soId" hidden>
+                    <input type="number" name="kategori_id" id="kategori_id" hidden>
                     <input type="text" name="kode" id="kode" hidden>
                     <div class="card-body">
                         <div class="form-group row">
@@ -23,6 +24,13 @@
                             <div class="col-sm-10">
                                 <input type="number" maxlength="2" name="discount" id="discount" class="form-control"
                                     placeholder="presentase discount">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-2 col-form-label">Deskripsi</label>
+                            <div class="col-sm-10">
+                                <input type="text"  name="deskripsi" id="deskripsi" class="form-control"
+                                    placeholder="Deskripsi singkat">
                             </div>
                         </div>
                         <div class="form-group row">

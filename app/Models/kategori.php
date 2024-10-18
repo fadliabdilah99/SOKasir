@@ -12,4 +12,8 @@ class kategori extends Model
     public function so(){
         return $this->hasMany(so::class);
     }
+
+    public function shop(){
+        return $this->hasMany(shop::class);
+    }
 }

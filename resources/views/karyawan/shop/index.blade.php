@@ -88,7 +88,7 @@
                                                 data-bs-target="#addprod" onclick="onEdits(this, {{ $barang->id }})">
                                                 <i class="fas fa-plus"></i>
                                             </button>
-                                            <form action="{{ url("deleteProd/$barang->id") }}" method="post">
+                                            <form action="{{ url("deleteShop/$barang->id") }}" method="post">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn bg-danger delete-data" type="submit">
@@ -122,6 +122,7 @@
                             <thead>
                                 <tr>
                                     <th>id</th>
+                                    <th>katId</th>
                                     <th>Kode</th>
                                     <th>Kategori</th>
                                     <th>foto</th>
@@ -135,6 +136,7 @@
                                 @foreach ($so as $sos)
                                     <tr>
                                         <td>{{ $sos->id }}</td>
+                                        <td>{{ $sos->kategori->id }}</td>
                                         <td>{{ $sos->kode }}</td>
                                         <td>{{ $sos->kategori->name }}</td>
                                         <td><img src="{{ asset('assets') }}/fotoSO/{{ $sos->foto }}" width="100px"
@@ -200,8 +202,9 @@
 
             // Mengisi input field
             document.getElementById('soId').value = tds[0].textContent.trim(); // name
-            document.getElementById('qty').max = tds[6].textContent.trim(); // kode
-            document.getElementById('qty').placeholder = "Jumlah tersedia " + tds[6].textContent.trim();
+            document.getElementById('kategori_id').value = tds[1].textContent.trim(); // name
+            document.getElementById('qty').max = tds[7].textContent.trim(); // kode
+            document.getElementById('qty').placeholder = "Jumlah tersedia " + tds[7].textContent.trim();
         }
     </script>
     <script>
