@@ -56,7 +56,7 @@ class soController extends Controller
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'hargamodal' => 'required|numeric|min:0',
-            'qty' => 'required|integer|min:1',
+            'qty' => 'required|integer',
         ]);
 
         $so = so::where('id', $id)->first();

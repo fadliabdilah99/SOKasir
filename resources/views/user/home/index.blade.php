@@ -14,6 +14,59 @@
     <noscript>
         <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .reel-wrapper {
+            white-space: nowrap;
+            /* Untuk memungkinkan elemen di dalamnya bergulir ke samping */
+            overflow-x: auto;
+            /* Menambahkan scroll hanya pada sumbu horizontal */
+            padding-bottom: 10px;
+            /* Memberikan ruang di bawah untuk kenyamanan scrolling */
+        }
+
+        .reel {
+            display: flex;
+            /* Flexbox untuk susunan horizontal */
+            flex-wrap: nowrap;
+            /* Mencegah elemen wrap ke baris baru */
+        }
+
+        article {
+            min-width: 200px;
+            /* Memberikan lebar minimum agar semua artikel memiliki ukuran yang konsisten */
+            flex: 0 0 auto;
+            /* Membuat elemen tidak membesar atau mengecil secara otomatis */
+        }
+
+        .hover-effect:hover {
+            filter: brightness(10%);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image.featured:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay i {
+            font-size: 2.5rem;
+            color: white;
+        }
+    </style>
 </head>
 
 <body class="homepage is-preload">
@@ -35,26 +88,27 @@
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li>
-                        <a href="#">Dropdown</a>
+                        <a href="#">Kategori</a>
                         <ul>
-                            <li><a href="#">Lorem ipsum dolor</a></li>
-                            <li><a href="#">Magna phasellus</a></li>
-                            <li><a href="#">Etiam dolore nisl</a></li>
-                            <li>
-                                <a href="#">And a submenu &hellip;</a>
-                                <ul>
-                                    <li><a href="#">Lorem ipsum dolor</a></li>
-                                    <li><a href="#">Phasellus consequat</a></li>
-                                    <li><a href="#">Magna phasellus</a></li>
-                                    <li><a href="#">Etiam dolore nisl</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">Veroeros feugiat</a></li>
+                            @foreach ($kategoris as $dropdown)
+                                <li><a href="#">{{ $dropdown->name }}</a></li>
+                            @endforeach
                         </ul>
                     </li>
-                    <li><a href="left-sidebar.html">Left Sidebar</a></li>
-                    <li><a href="right-sidebar.html">Right Sidebar</a></li>
-                    <li><a href="no-sidebar.html">No Sidebar</a></li>
+                    <li><a href="left-sidebar.html">SALE</a></li>
+                    @if (Auth::check())
+                        <li>
+                            <form action="{{ 'logout' }}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    @else
+                        <li><a href="{{ url('login') }}">Login</a></li>
+                    @endif
+                    <li><a href="{{ url('cart') }}"><i class="bi bi-cart3"></i></a></li>
+                    <li><a href="{{ url('profile') }}"><i class="bi bi-person-circle"></i></a></li>
                 </ul>
             </nav>
 
@@ -75,17 +129,24 @@
                 <div class="reel">
                     @foreach ($kategori->shop as $shop)
                         <article>
-                            <a href="#" class="image featured"><img
-                                    src="{{ asset('assets/fotoSO/' . $shop->so->foto) }}" alt="" /></a>
+                            <a href="{{ url('info/' . $shop->id) }}" class="image featured position-relative">
+                                <img src="{{ asset('assets/fotoSO/' . $shop->so->foto) }}" alt=""
+                                    class="img-fluid hover-effect" />
+                                <div class="overlay d-flex justify-content-center align-items-center">
+                                    <i class="bi bi-eye"></i> <!-- Menggunakan Bootstrap Icons -->
+                                </div>
+                            </a>
                             <header>
-                                <h3><a href="#">{{ $shop->so->nama }}</a></h3>
+                                <h3><a href="">{{ $shop->so->nama }}</a></h3>
                             </header>
                             <p><span @if ($shop->discount >= 0) style="text-decoration: line-through" @endif>Rp
-                                    {{ number_format($harga = ($shop->so->hargamodal * $margins->margin) / 100 + $shop->so->hargamodal) }}</span> @if ($shop->discount >= 0)
-                                    <span>Rp {{ number_format($harga - ($harga * $shop->discount / 100) ) }}</span>
-                                    @endif
+                                    {{ number_format($harga = ($shop->so->hargamodal * $margins->margin) / 100 + $shop->so->hargamodal) }}</span>
+                                @if ($shop->discount >= 0)
+                                    <span>Rp {{ number_format($harga - ($harga * $shop->discount) / 100) }}</span>
+                                @endif
                                 <br>
-                                {{ $shop->deskripsi }} </p>
+                                {{ $shop->deskripsi }}
+                            </p>
                         </article>
                     @endforeach
                 </div>

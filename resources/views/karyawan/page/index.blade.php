@@ -229,7 +229,7 @@
             
 
             // Mengisi input field
-            document.getElementById('namas').value = tds[2].textContent.trim(); // nama
+            document.getElementById('namas').value = tds[4].textContent.trim(); // nama
             document.getElementById('deskripsis').value = tds[5].textContent.trim(); // deskripsi
             document.getElementById('hargamodals').value = tds[6].textContent.trim(); // harga modal
             document.getElementById('qtys').value = tds[7].textContent.trim(); // qty

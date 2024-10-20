@@ -13,16 +13,14 @@ use App\Http\Controllers\userController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect('login');
-});
+
 
 Route::get('/dashboard', function () {
     if (Auth::user()->role == 'karyawan') {
         return redirect('karyawan');
     } elseif (Auth::user()->role == 'admin') {
         return redirect('admin');
-    }elseif (Auth::user()->role == 'user') {
+    } elseif (Auth::user()->role == 'user') {
         return redirect('user');
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -33,9 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::group(['middleware' => ['role:user']], function () {
-    Route::get('user', [userController::class, 'index']);
-});
+
+Route::get('/', [userController::class, 'index']);
+
+// shop controller
+Route::get('info/{id}', [shopController::class, 'info']);
+
 
 
 Route::group(['middleware' => ['role:karyawan']], function () {
@@ -81,7 +82,6 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::post('shop', [shopController::class, 'add']);
     Route::post('updateshop/{id}', [shopController::class, 'update']);
     Route::delete('deleteShop/{id}', [shopController::class, 'delete']);
-
 });
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin', [adminController::class, 'index']);

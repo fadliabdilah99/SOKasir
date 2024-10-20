@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
         }elseif (Auth::user()->role == 'admin') {
             return redirect('admin');
         }elseif (Auth::user()->role == 'user') {
-            return redirect('user');
+            return redirect('/');
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\foto;
+use App\Models\margin;
 use App\Models\shop;
 use App\Models\so;
 use Illuminate\Http\Request;
@@ -21,6 +22,8 @@ class shopController extends Controller
 
         $request->validate([
             'qty' => 'required',
+            'detail' => 'required',
+            'deskripsi' => 'required',
             'foto.*' => 'required|image',
         ]);
 
@@ -33,6 +36,7 @@ class shopController extends Controller
             'so_id' => $request->so_id,
             'kategori_id' => $request->kategori_id,
             'qty' => $request->qty,
+            'detail' => $request->detail,
             'discount' => $request->discount,
             'deskripsi' => $request->deskripsi,
         ]);
@@ -81,18 +85,30 @@ class shopController extends Controller
             $newSoQty = ($shop->qty - $request->qty) + $so->qty;
         }
 
-        // Update qty di tabel `so`
         $so->update(['qty' => $newSoQty]);
-        // Update qty dan discount di tabel `shop`
-        $shop->update([
+        $shopData = [
             'qty' => $request->qty,
             'discount' => $request->discount,
-        ]);
+        ];
+
+        if ($request->filled('detail')) {
+            $shopData['detail'] = $request->detail;
+        }
+
+        if ($request->filled('deskripsi')) {
+            $shopData['deskripsi'] = $request->deskripsi;
+        } else {
+            $shopData['deskripsi'] = $shop->deskripsi;
+        }
+
+        $shop->update($shopData);
+
+
 
 
         if ($request->hasFile('foto')) {
             foto::where('shop_id', $request->so_id)->get()->each(function ($fotos) use ($request) {
-                    unlink('assets/asset/' . $fotos->fotos);
+                unlink('assets/asset/' . $fotos->fotos);
                 $fotos->delete();
             });
             foreach ($request->file('foto') as $file) {
@@ -118,5 +134,17 @@ class shopController extends Controller
             $f->delete();
         }
         return redirect()->back()->with('success', 'Data Berhasil di Hapus');
+    }
+
+
+
+    // user paeg
+
+    public function info($id)
+    {
+        $data['margins'] = margin::where('jenis', 'online')->first();
+        $data['shop'] = shop::where('id', $id)->with('so')->with('foto')->first();
+        $data['rekomendasi'] = shop::where('id', '!=', $id)->inRandomOrder()->take(6)->get();
+        return view('user.cart.info')->with($data);
     }
 }
