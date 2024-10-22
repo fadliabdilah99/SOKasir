@@ -37,6 +37,7 @@ Route::get('/', [userController::class, 'index']);
 // shop controller
 Route::get('info/{id}', [shopController::class, 'info']);
 Route::post('addcart', [CartController::class, 'addcart']);
+Route::get('carts/{id}', [CartController::class, 'checkcart']);
 
 
 

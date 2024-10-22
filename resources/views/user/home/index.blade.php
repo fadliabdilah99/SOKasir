@@ -14,6 +14,8 @@
     <noscript>
         <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
+    {{-- SweetAlert2 --}}
+    <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         .reel-wrapper {
@@ -97,16 +99,30 @@
                     </li>
                     <li><a href="left-sidebar.html">SALE</a></li>
                     @if (Auth::check())
-                        <li>
-                            <form action="{{ 'logout' }}" method="POST">
-                                @csrf
-                                <button class="btn btn-danger" type="submit">Logout</button>
-                            </form>
-                        </li>
+                    <li>
+                        <form id="logout-form" action="{{ 'logout' }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a href="#" class="btn btn-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                    </li>
+                    
                     @else
                         <li><a href="{{ url('login') }}">Login</a></li>
                     @endif
-                    <li><a href="{{ url('cart') }}"><i class="bi bi-cart3"></i></a></li>
+                    <li>
+                        @if (Auth::check())
+                            <a href="{{ url('carts/' . Auth::user()->id) }}">
+                                <i class="bi bi-cart3"></i>
+                            </a>
+                        @else
+                            <a class="no-login" href="#">
+                                <i class="bi bi-cart3"></i>
+                            </a>
+                        @endif
+                    </li>
+
                     <li><a href="{{ url('profile') }}"><i class="bi bi-person-circle"></i></a></li>
                 </ul>
             </nav>
@@ -376,7 +392,6 @@
                                             class="label">Linkedin</span></a></li>
                             </ul>
                         </section>
-
                         <!-- Copyright -->
                         <div class="copyright">
                             <ul class="menu">
@@ -384,15 +399,16 @@
                                 <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
                             </ul>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
 
     </div>
 
+
+    {{-- sweetalert2 --}}
+    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- Scripts -->
     <script src="assets-home/js/jquery.min.js"></script>
     <script src="assets-home/js/jquery.dropotron.min.js"></script>
@@ -402,6 +418,31 @@
     <script src="assets-home/js/breakpoints.min.js"></script>
     <script src="assets-home/js/util.js"></script>
     <script src="assets-home/js/main.js"></script>
+
+
+    <script>
+        $('.no-login').click(function(e) {
+            e.preventDefault()
+
+            Swal.fire({
+                icon: 'warning', // Tanda seru
+                title: 'Perhatian!',
+                text: 'Anda harus login untuk mengakses fitur ini!',
+                showCancelButton: true, // Jika ingin menampilkan tombol batal
+                confirmButtonText: 'Login', // Teks tombol konfirmasi
+                cancelButtonText: 'Batal', // Teks tombol batal
+                customClass: {
+                    // Menggunakan custom class
+                    popup: 'no-login', // Tambahkan class custom jika ingin
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect ke halaman login atau tindakan lainnya
+                    window.location.href = '/login'; // Ganti dengan URL login yang sesuai
+                }
+            });
+        });
+    </script>
 
 </body>
 

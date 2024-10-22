@@ -10,6 +10,7 @@
             <input type="number" name="so_id" hidden value="{{ $shop->so->id }}">
             <input type="text" name="margin" hidden value="{{ $margins->jenis }}">
             <input type="number" name="shopId" hidden value="{{ $shop->id }}">
+            <input type="number" name="discount" hidden value="{{ $totaldiscount }}">
             <input type="number" name="total" hidden value="{{ $shop->discount >= 0 ? $disharga : $harga }}">
             <div class="row">
                 <!-- Product Image -->
@@ -31,11 +32,12 @@
                         <label for="sizeSelect" class="form-label">Size</label>
                         <select class="form-select" id="sizeSelect" name="size">
                             @foreach ($shop->size as $select)
-                                <option value="{{ $select->id }}">{{ $select->size }}</option>
+                                @if ($select->qty != 0)
+                                    <option value="{{ $select->id }}">{{ $select->size }}</option>
+                                @endif
                             @endforeach
                         </select>
-                    </div>
-
+                    </div>                    
                     <!-- Quantity Input -->
                     <div class="mb-3">
                         <label for="quantity" class="form-label">Quantity</label>

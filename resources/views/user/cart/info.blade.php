@@ -11,12 +11,14 @@
     </noscript>
 
     <style>
+        .no-login {
+            /* Gaya untuk popup SweetAlert dengan class no-login */
+            background-color: #f9f9f9;
+            /* Contoh warna latar */
+            border: 2px solid #f0ad4e;
+            /* Contoh warna border */
+        }
 
-.no-login {
-    /* Gaya untuk popup SweetAlert dengan class no-login */
-    background-color: #f9f9f9; /* Contoh warna latar */
-    border: 2px solid #f0ad4e; /* Contoh warna border */
-}
         #offcanvasBottom {
             height: 70vh;
             /* Mengatur tinggi offcanvas menjadi 80% dari viewport */
@@ -129,9 +131,10 @@
                                         <input type="radio" name="color_option" id="color_option_b1" autocomplete="off">
                                         <span class="text-xl">{{ $sizes->size }}</span>
                                         <br>
-                                        Ready {{ $sizes->qty }}
                                         @if ($sizes->qty == 0)
                                             <span class="badge bg-danger">Stok Habis</span>
+                                        @else
+                                            Ready {{ $sizes->qty }}
                                         @endif
                                     </label>
                                 @endforeach
@@ -144,7 +147,7 @@
                                         {{ number_format($harga = ($shop->so->hargamodal * $margins->margin) / 100 + $shop->so->hargamodal) }}</span>
                                     @if ($shop->discount > 0)
                                         <span>Rp
-                                            {{ number_format($disharga = $harga - ($harga * $shop->discount) / 100) }}</span>
+                                            {{ number_format($disharga = $harga - ($totaldiscount = ($harga * $shop->discount) / 100)) }}</span>
                                     @endif
 
 
@@ -270,6 +273,23 @@
 
         </section>
         <!-- /.content -->
+
+        <div class="position-fixed end-0  bottom-0 p-5">
+            <div class="d-flex flex-column align-items-end gap-3">
+                <!-- Wishlist Button -->
+                <a href="{{ url('wishlist') }}"
+                    class="btn btn-primary btn-lg rounded-circle shadow d-flex align-items-center justify-content-center"
+                    style="width: 60px; height: 60px;">
+                    <i class="bi bi-heart text-white fs-4"></i>
+                </a>
+                <!-- Cart Button -->
+                <a href="{{ url('carts/' . Auth::user()->id) }}"
+                    class="btn btn-success btn-lg rounded-circle shadow d-flex align-items-center justify-content-center"
+                    style="width: 60px; height: 60px;">
+                    <i class="bi bi-cart text-white fs-4"></i>
+                </a>
+            </div>
+        </div>
 
         @include('user.cart.modal')
     </div>

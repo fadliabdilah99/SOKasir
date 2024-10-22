@@ -103,29 +103,44 @@ class cartController extends Controller
     }
 
 
-    public function addcart(Request $request){
+    public function addcart(Request $request)
+    {
         $request->validate([
             'qty' => 'required',
             'margin' => 'required',
             'size' => 'required',
         ]);
         $size = size::where('id', $request->size)->first();
+        if (chart::where('user_id', $request->user_id)->where('so_id', $request->so_id)->where('size', $size->size)->first() != null) {
+            $cart = chart::where('user_id', $request->user_id)->where('so_id', $request->so_id)->where('size', $size->size)->first();
+            $qtynew = $cart->qty + $request->qty;
+            if ($size->qty < $qtynew) {
+                return redirect()->back()->with('error', 'QTY di Cart sudah maksimal');
+            }
+            $cart->update([
+                'qty' => $qtynew
+            ]);
+            return redirect('carts/' . Auth::user()->id)->with('success', 'QTY di tambahkan');
+        }
         if ($size->qty < $request->qty) {
             return redirect()->back()->with('error', 'Stok tidak mencukupi');
         }
-        $qtynew = $size->qty - $request->qty;
-        $size->update([
-            'qty' => $qtynew
-        ]);
         chart::create([
             'user_id' => $request->user_id,
             'so_id' => $request->so_id,
             'qty' => $request->qty,
+            'size' => $size->size,
             'total' => $request->total * $request->qty,
-            'discount' => $request->total * $request->discount / 100,
+            'discount' => $request->discount * $request->qty,
             'margin' => $request->margin,
         ]);
-      
-        return redirect()->back()->with('success', 'Data Berhasil di Tambahkan');
+
+        return redirect('carts/' . Auth::user()->id)->with('success', 'Data Berhasil di tambahkan ke keranjang');
+    }
+
+    public function checkcart($id)
+    {
+        $data['carts'] = chart::where('user_id', $id)->with('so')->get();
+        return view('user.cart.cart')->with($data);
     }
 }
