@@ -43,10 +43,11 @@
                                 <tr>
                                     <th>id</th>
                                     <th>Kode Barang</th>
-                                    <th>Nama Produk</th>
+                                    <th>Nama</th>
                                     <th>QTY</th>
+                                    <th>size</th>
                                     <th>Discount(%)</th>
-                                    <th>Foto Poduct</th>
+                                    <th>Foto</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -57,6 +58,17 @@
                                         <td>{{ $barang->so->kode }}</td>
                                         <td>{{ $barang->so->nama }}</td>
                                         <td>{{ $barang->qty }}</td>
+                                        <td>
+                                            @foreach ($barang->size as $sizes)
+                                                <form action="{{ url('deletesize/' . $sizes->id) }}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" class="btn delete-data btn-primary mb-1">
+                                                        {{ $sizes->size }} : {{ $sizes->qty }}
+                                                    </button><br>
+                                                </form>
+                                            @endforeach
+                                        </td>
                                         <td>{{ $barang->discount }}</td>
                                         <td class="bg-dark">
                                             <div id="carouselExample{{ $loop->index }}" class="carousel"
@@ -64,8 +76,8 @@
                                                 <div class="carousel-inner">
                                                     @foreach ($barang->foto as $index => $foto)
                                                         <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                                            <img src="assets/asset/{{ $foto->fotos }}"
-                                                                width="100px" alt="">
+                                                            <img src="assets/asset/{{ $foto->fotos }}" width="100px"
+                                                                alt="">
                                                         </div>
                                                     @endforeach
                                                 </div>
@@ -87,6 +99,11 @@
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#addprod" onclick="onEdits(this, {{ $barang->id }})">
                                                 <i class="fas fa-plus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                data-bs-target="#size"
+                                                onclick="sizeform(this, {{ $barang->size->sum('qty') }})">
+                                                <i class="bi bi-rulers"></i>
                                             </button>
                                             <form action="{{ url("deleteShop/$barang->id") }}" method="post">
                                                 @csrf
@@ -219,14 +236,28 @@
             });
 
             // Mengisi input field
-            document.getElementById('soId').value = tds[0].textContent.trim(); // name
-            document.getElementById('kode').value = tds[1].textContent.trim(); // name
+            document.getElementById('soId').value = tds[0].textContent.trim();
+            document.getElementById('kode').value = tds[1].textContent.trim();
             document.getElementById('qty').value = tds[3].textContent.trim();
             document.getElementById('discount').value = tds[4].textContent.trim();
 
             // Set action URL untuk update
             document.getElementById('modaledit').action = `updateshop/${historyId}`; // URL untuk mengupdate
             console.log("Form action set to:", document.getElementById('modaledit').action);
+        }
+    </script>
+
+    <script>
+        function sizeform(btn, qty) {
+            const tr = btn.closest('tr');
+            const tds = tr.querySelectorAll('td');
+
+            // Mengisi input field
+            let max = (parseInt(tds[3].textContent.trim(), 10) - qty);
+            document.getElementById('sosizeId').value = tds[0].textContent.trim();
+            document.getElementById('qtysize').max = max;
+            document.getElementById('qtysize').placeholder = "Jumlah tersedia " + max;
+
         }
     </script>
 
@@ -273,7 +304,7 @@
             const data = $(this).closest('tr').find('td:eq(1)').text()
             Swal.fire({
                     title: 'Semua Data Terkait Akan Hilang',
-                    text: `Apakah penghapusan data ${data} akan dilanjutkan?`,
+                    text: `Apakah penghapusan data akan dilanjutkan?`,
                     icon: 'warning',
                     showDenyButton: true,
                     confirmButtonText: 'Ya',

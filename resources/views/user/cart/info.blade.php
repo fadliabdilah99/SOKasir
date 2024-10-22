@@ -11,6 +11,26 @@
     </noscript>
 
     <style>
+
+.no-login {
+    /* Gaya untuk popup SweetAlert dengan class no-login */
+    background-color: #f9f9f9; /* Contoh warna latar */
+    border: 2px solid #f0ad4e; /* Contoh warna border */
+}
+        #offcanvasBottom {
+            height: 70vh;
+            /* Mengatur tinggi offcanvas menjadi 80% dari viewport */
+        }
+
+        button {
+            background-color: transparent;
+            size: none;
+        }
+
+        button:hover {
+            background-color: transparent;
+        }
+
         .image.featured {
             display: inline-block;
             position: relative;
@@ -32,7 +52,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
             /* Latar belakang semi-transparan */
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -103,32 +122,19 @@
                             <h3 class="my-3">{{ $shop->so->nama }}</h3>
                             <p>{{ $shop->deskripsi }}</p>
                             </p>
-                            <h4 class="mt-3">Size <small>Please select one</small></h4>
+                            <h4 class="mt-3">Size <small>Readonly</small></h4>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-default text-center">
-                                    <input type="radio" name="color_option" id="color_option_b1" autocomplete="off">
-                                    <span class="text-xl">S</span>
-                                    <br>
-                                    Small
-                                </label>
-                                <label class="btn btn-default text-center">
-                                    <input type="radio" name="color_option" id="color_option_b2" autocomplete="off">
-                                    <span class="text-xl">M</span>
-                                    <br>
-                                    Medium
-                                </label>
-                                <label class="btn btn-default text-center">
-                                    <input type="radio" name="color_option" id="color_option_b3" autocomplete="off">
-                                    <span class="text-xl">L</span>
-                                    <br>
-                                    Large
-                                </label>
-                                <label class="btn btn-default text-center">
-                                    <input type="radio" name="color_option" id="color_option_b4" autocomplete="off">
-                                    <span class="text-xl">XL</span>
-                                    <br>
-                                    Xtra-Large
-                                </label>
+                                @foreach ($shop->size as $sizes)
+                                    <label class="btn btn-default text-center">
+                                        <input type="radio" name="color_option" id="color_option_b1" autocomplete="off">
+                                        <span class="text-xl">{{ $sizes->size }}</span>
+                                        <br>
+                                        Ready {{ $sizes->qty }}
+                                        @if ($sizes->qty == 0)
+                                            <span class="badge bg-danger">Stok Habis</span>
+                                        @endif
+                                    </label>
+                                @endforeach
                             </div>
 
                             <div class=" py-2 px-3 mt-4">
@@ -137,7 +143,8 @@
                                         @if ($shop->discount > 0) style="text-decoration: line-through; font-size: 20px; color: red" @endif>Rp
                                         {{ number_format($harga = ($shop->so->hargamodal * $margins->margin) / 100 + $shop->so->hargamodal) }}</span>
                                     @if ($shop->discount > 0)
-                                        <span>Rp {{ number_format($harga - ($harga * $shop->discount) / 100) }}</span>
+                                        <span>Rp
+                                            {{ number_format($disharga = $harga - ($harga * $shop->discount) / 100) }}</span>
                                     @endif
 
 
@@ -148,10 +155,13 @@
                             </div>
 
                             <div class="mt-4">
-                                <div class="btn btn-primary btn-lg btn-flat">
-                                    <i class="fas fa-cart-plus fa-lg mr-2"></i>
-                                    Add to Cart
-                                </div>
+
+                                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
+                                    <div class="btn btn-primary btn-lg btn-flat">
+                                        <i class="fas fa-cart-plus fa-lg mr-2"></i>
+                                    </div>
+                                </button>
 
                                 <div class="btn btn-default btn-lg btn-flat">
                                     <i class="fas fa-heart fa-lg mr-2"></i>
@@ -177,7 +187,7 @@
                             <div class="mt-4">
                                 <h4>Detail</h4>
                                 <p>
-                                    {{ $shop->detail }} 
+                                    {{ $shop->detail }}
                                 </p>
                             </div>
 
@@ -202,11 +212,11 @@
                                 aria-labelledby="product-desc-tab">
                                 <section class="carousel">
                                     <div class="reel">
-                                        @foreach ($rekomendasi as $shop)
+                                        @foreach ($rekomendasi as $shoprekomendasi)
                                             <article>
-                                                <a href="{{ url('info/' . $shop->id) }}"
+                                                <a href="{{ url('info/' . $shoprekomendasi->id) }}"
                                                     class="image featured position-relative">
-                                                    <img src="{{ asset('assets/fotoSO/' . $shop->so->foto) }}"
+                                                    <img src="{{ asset('assets/fotoSO/' . $shoprekomendasi->so->foto) }}"
                                                         alt="" class="img-fluid hover-effect" />
                                                     <div class="overlay d-flex justify-content-center align-items-center">
                                                         <i class="bi bi-eye text-dark"></i>
@@ -214,17 +224,17 @@
                                                     </div>
                                                 </a>
                                                 <header>
-                                                    <h3><a href="">{{ $shop->so->nama }}</a></h3>
+                                                    <h3><a href="">{{ $shoprekomendasi->so->nama }}</a></h3>
                                                 </header>
                                                 <p><span
-                                                        @if ($shop->discount >= 0) style="text-decoration: line-through" @endif>Rp
-                                                        {{ number_format($harga = ($shop->so->hargamodal * $margins->margin) / 100 + $shop->so->hargamodal) }}</span>
-                                                    @if ($shop->discount >= 0)
+                                                        @if ($shoprekomendasi->discount >= 0) style="text-decoration: line-through" @endif>Rp
+                                                        {{ number_format($harga = ($shoprekomendasi->so->hargamodal * $margins->margin) / 100 + $shoprekomendasi->so->hargamodal) }}</span>
+                                                    @if ($shoprekomendasi->discount >= 0)
                                                         <span>Rp
-                                                            {{ number_format($harga - ($harga * $shop->discount) / 100) }}</span>
+                                                            {{ number_format($harga - ($harga * $shoprekomendasi->discount) / 100) }}</span>
                                                     @endif
                                                     <br>
-                                                    {{ $shop->deskripsi }}
+                                                    {{ $shoprekomendasi->deskripsi }}
                                                 </p>
                                             </article>
                                         @endforeach
@@ -260,6 +270,8 @@
 
         </section>
         <!-- /.content -->
+
+        @include('user.cart.modal')
     </div>
     @push('script')
         @include('karyawan.event.script')
@@ -274,6 +286,8 @@
             })
         </script>
 
+
+
         <!-- Scripts -->
         <script src="../../assets-home/js/jquery.min.js"></script>
         <script src="../../assets-home/js/jquery.dropotron.min.js"></script>
@@ -283,4 +297,27 @@
         <script src="../../assets-home/js/breakpoints.min.js"></script>
         <script src="../../assets-home/js/util.js"></script>
         <script src="../../assets-home/js/main.js"></script>
+
+
+        <script>
+            function showAlertNoLogin() {
+                Swal.fire({
+                    icon: 'warning', // Tanda seru
+                    title: 'Perhatian!',
+                    text: 'Anda harus login untuk mengakses fitur ini!',
+                    showCancelButton: true, // Jika ingin menampilkan tombol batal
+                    confirmButtonText: 'Login', // Teks tombol konfirmasi
+                    cancelButtonText: 'Batal', // Teks tombol batal
+                    customClass: {
+                        // Menggunakan custom class
+                        popup: 'no-login', // Tambahkan class custom jika ingin
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect ke halaman login atau tindakan lainnya
+                        window.location.href = '/login'; // Ganti dengan URL login yang sesuai
+                    }
+                });
+            }
+        </script>
     @endpush

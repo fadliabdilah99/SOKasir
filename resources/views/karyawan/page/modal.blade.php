@@ -103,7 +103,8 @@
             </div>
             <div class="card card-info">
                 <!-- form start -->
-                <form id="modalForm" class="form-horizontal" action="kategori" method="POST" enctype="multipart/form-data">
+                <form id="modalForm" class="form-horizontal" action="kategori" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <!-- Field untuk menyimpan ID untuk keperluan edit -->
                     <input type="hidden" name="_method" value="POST">
@@ -155,7 +156,7 @@
                     @csrf
                     <!-- Field untuk menyimpan ID untuk keperluan edit -->
                     <input type="hidden" name="hargamodal" id="SOmodals" value="POST">
-                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}"  value="POST">
+                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" value="POST">
                     <div class="card-body">
                         <div class="form-group row" hidden>
                             <label for="name" class="col-sm-4 col-form-label">SO</label>
@@ -167,15 +168,15 @@
                         <div class="form-group row">
                             <label for="name" class="col-sm-4 col-form-label">Harga modal</label>
                             <div class="col-sm-8">
-                                <input type="number" disabled  id="SOmodal" class="form-control"
+                                <input type="number" disabled id="SOmodal" class="form-control"
                                     placeholder="Kategori name">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="name" class="col-sm-4 col-form-label">Penanggung Jawab</label>
                             <div class="col-sm-8">
-                                <input type="text" disabled value="{{ Auth::user()->name }}" 
-                                    id="SoId" class="form-control" placeholder="Kategori name">
+                                <input type="text" disabled value="{{ Auth::user()->name }}" id="SoId"
+                                    class="form-control" placeholder="Kategori name">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -215,3 +216,9 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+

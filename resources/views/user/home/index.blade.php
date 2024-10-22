@@ -98,9 +98,8 @@
                     <li><a href="left-sidebar.html">SALE</a></li>
                     @if (Auth::check())
                         <li>
-                            <form action="{{ 'logout' }}">
+                            <form action="{{ 'logout' }}" method="POST">
                                 @csrf
-                                @method('DELETE')
                                 <button class="btn btn-danger" type="submit">Logout</button>
                             </form>
                         </li>

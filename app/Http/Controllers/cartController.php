@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\chart;
 use App\Models\margin;
 use App\Models\penjualan;
+use App\Models\size;
 use App\Models\so;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -99,5 +100,32 @@ class cartController extends Controller
         }
 
         return redirect()->back()->with('error', 'Pilih item untuk checkout.');
+    }
+
+
+    public function addcart(Request $request){
+        $request->validate([
+            'qty' => 'required',
+            'margin' => 'required',
+            'size' => 'required',
+        ]);
+        $size = size::where('id', $request->size)->first();
+        if ($size->qty < $request->qty) {
+            return redirect()->back()->with('error', 'Stok tidak mencukupi');
+        }
+        $qtynew = $size->qty - $request->qty;
+        $size->update([
+            'qty' => $qtynew
+        ]);
+        chart::create([
+            'user_id' => $request->user_id,
+            'so_id' => $request->so_id,
+            'qty' => $request->qty,
+            'total' => $request->total * $request->qty,
+            'discount' => $request->total * $request->discount / 100,
+            'margin' => $request->margin,
+        ]);
+      
+        return redirect()->back()->with('success', 'Data Berhasil di Tambahkan');
     }
 }

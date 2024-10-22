@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\foto;
 use App\Models\margin;
 use App\Models\shop;
+use App\Models\size;
 use App\Models\so;
 use Illuminate\Http\Request;
 
@@ -12,8 +13,9 @@ class shopController extends Controller
 {
     public function index()
     {
+
         $data['so'] = so::with('kategori')->get();
-        $data['barangs'] = shop::with('so')->with('kategori')->with('foto')->get();
+        $data['barangs'] = shop::with('so')->with('size')->with('kategori')->with('foto')->get();
         return view('karyawan.shop.index')->with($data);
     }
 
@@ -57,6 +59,30 @@ class shopController extends Controller
 
 
         return redirect()->back()->with('success', 'Berhasil menambahkan produk market, dan penyimpanan foto');
+    }
+
+    public function size(Request $request)
+    {
+        $request->validate([
+            'shop_id' => 'required',
+            'size' => 'required',
+            'qty' => 'required',
+        ]);
+
+        if (size::where('shop_id', $request->shop_id)->where('size', $request->size)->first() != null) {
+           size::where('shop_id', $request->shop_id)->where('size', $request->size)->update([
+               'qty' => $request->qty
+           ]);
+           return redirect()->back()->with('success', 'Data Berhasil di Update');
+        }
+     size::create($request->all());
+     return redirect()->back()->with('success', 'Berhasil menambahkan size');
+    }
+
+    public function deletesize($id)
+    {
+        size::where('id', $id)->delete();
+        return redirect()->back()->with('success', 'Data Berhasil di Hapus');
     }
 
     public function update(Request $request, $id)
@@ -143,7 +169,7 @@ class shopController extends Controller
     public function info($id)
     {
         $data['margins'] = margin::where('jenis', 'online')->first();
-        $data['shop'] = shop::where('id', $id)->with('so')->with('foto')->first();
+        $data['shop'] = shop::where('id', $id)->with('so')->with('foto')->with('size')->first();
         $data['rekomendasi'] = shop::where('id', '!=', $id)->inRandomOrder()->take(6)->get();
         return view('user.cart.info')->with($data);
     }

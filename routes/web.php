@@ -36,6 +36,7 @@ Route::get('/', [userController::class, 'index']);
 
 // shop controller
 Route::get('info/{id}', [shopController::class, 'info']);
+Route::post('addcart', [CartController::class, 'addcart']);
 
 
 
@@ -80,6 +81,8 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     // shop controller
     Route::get('shop', [shopController::class, 'index']);
     Route::post('shop', [shopController::class, 'add']);
+    Route::post('addsize', [shopController::class, 'size']);
+    Route::delete('deletesize/{id}', [shopController::class, 'deletesize']);
     Route::post('updateshop/{id}', [shopController::class, 'update']);
     Route::delete('deleteShop/{id}', [shopController::class, 'delete']);
 });

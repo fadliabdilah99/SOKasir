@@ -83,7 +83,7 @@
                                         <td>{{ $sos->qty }}</td>
 
                                         <td>
-                                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                            <button type="button" class="btn m-1 btn-info" data-bs-toggle="modal"
                                                 data-bs-target="#checkout" onclick="checkouts(this, {{ $sos->id }})">
                                                 <i class="fas fa-shopping-cart"></i>
                                             </button>
@@ -91,6 +91,7 @@
                                                 data-bs-target="#addso" onclick="onEdits(this, {{ $sos->id }})">
                                                 <i class="fas fa-edit"></i>
                                             </button>
+
                                             <form action="{{ url("so/$sos->id") }}" method="POST" style="display: inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -169,7 +170,7 @@
             <i class="fas fa-cart-plus"></i>
         </a>
     </div>
-    
+
     <!-- /.content-wrapper -->
 
     <!-- Control Sidebar -->
@@ -226,7 +227,7 @@
             const tr = btn.closest('tr');
             const tds = tr.querySelectorAll('td');
 
-            
+
 
             // Mengisi input field
             document.getElementById('namas').value = tds[4].textContent.trim(); // nama
@@ -244,20 +245,14 @@
 
     <script>
         function checkouts(btn, soId) {
-            console.log('hello');
             const tr = btn.closest('tr');
             const tds = tr.querySelectorAll('td');
 
-            // Logging untuk debugging
-            console.log("Editing ID:", soId);
-            tds.forEach((td, index) => {
-                console.log(`td[${index}]:`, td.textContent.trim());
-            });
 
             // Mengisi input field
-            document.getElementById('SoId').value = tds[0].textContent.trim(); 
-            document.getElementById('SOmodal').value = tds[6].textContent.trim(); 
-            document.getElementById('SOmodals').value = tds[6].textContent.trim(); 
+            document.getElementById('SoId').value = tds[0].textContent.trim();
+            document.getElementById('SOmodal').value = tds[6].textContent.trim();
+            document.getElementById('SOmodals').value = tds[6].textContent.trim();
             document.getElementById('SoQTY').placeholder = "Maximal " + tds[7].textContent.trim();
             document.getElementById('SoQTY').max = tds[7].textContent.trim();
 
@@ -267,6 +262,7 @@
             console.log("Form action set to:", document.getElementById('modalFormSO').action);
         }
     </script>
+ 
 
 
 
