@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('provinces', function (Blueprint $table) {
             $table->id();
+            $table->unsignedInteger('kode');
+            $table->string('title');
             $table->timestamps();
         });
     }
