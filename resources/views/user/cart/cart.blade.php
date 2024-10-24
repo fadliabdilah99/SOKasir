@@ -8,6 +8,9 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {{-- SweetAlert2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <style>
         /* Custom CSS for Cart Page */
         .cart-header {
@@ -38,6 +41,20 @@
 </head>
 
 <body>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-12">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">cart</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
     <div class="container mt-5">
         <!-- Cart Header -->
         <div class="row cart-header text-center d-none d-md-flex">
@@ -46,9 +63,10 @@
             <div class="col-md-1">Size</div>
             <div class="col-md-2">Price</div>
             <div class="col-md-1">Quantity</div>
-            <div class="col-md-2">Subtotal</div>
+            <div class="col-md-1">Subtotal</div>
+            <div class="col-md-1">Delete</div>
         </div>
-        
+
 
 
         <!-- Cart Item -->
@@ -64,7 +82,14 @@
                     <input type="number" class="form-control text-center" value="{{ $cart->qty }}" min="1"
                         readonly>
                 </div>
-                <div class="col-md-2">Rp {{ number_format($cart->total) }}</div>
+                <div class="col-md-1">Rp {{ number_format($cart->total) }}</div>
+                <div class="col-md-1">
+                    <form action="{{ url('cartcancle/' . $cart->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-danger delete-data"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
             </div>
         @endforeach
 
@@ -75,8 +100,10 @@
         <div class="row mt-4">
             <div class="col-md-8"></div>
             <div class="col-md-4">
-                <div class="cart-total">Hemat : Rp {{ $cart->sum('discount') }}</div>
-                <div class="cart-total"> Total: Rp {{ number_format($cart->sum('total')) }}</div>
+                @if ($carts->count() > 0)
+                    <div class="cart-total">Hemat: Rp {{ number_format($carts->sum('discount')) }}</div>
+                    <div class="cart-total">Total: Rp {{ number_format($carts->sum('total')) }}</div>
+                @endif
             </div>
         </div>
 
@@ -116,6 +143,60 @@
 
     <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $('.delete-data').click(function(e) {
+            e.preventDefault();
+            const data = $(this).closest('.cart-item').find('.col-md-4').text();
+            Swal.fire({
+                title: 'Data Ini akan hilang',
+                text: `Apakah penghapusan data ${data} akan dilanjutkan?`,
+                icon: 'warning',
+                showDenyButton: true,
+                confirmButtonText: 'Ya',
+                denyButtonText: 'Tidak',
+                focusConfirm: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e.target).closest('form').submit();
+                } else {
+                    Swal.close();
+                }
+            });
+        });
+    </script>
+    @if ($message = Session::get('success'))
+        <script>
+            Swal.fire({
+                title: "Berhasil!",
+                text: "{{ $message }}",
+                icon: "success"
+            });
+        </script>
+    @endif
+    @if ($message = Session::get('error'))
+        <script>
+            Swal.fire({
+                title: "gagal!",
+                text: "{{ $message }}",
+                icon: "error"
+            });
+        </script>
+    @endif
+
+    @if ($message = Session::get($errors->any()))
+        <script>
+            Swal.fire({
+                title: "Errors!",
+                text: "{{ $message }}",
+                icon: "error"
+            });
+        </script>
+    @endif
 </body>
 
 </html>

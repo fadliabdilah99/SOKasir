@@ -10,6 +10,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\shopController;
 use App\Http\Controllers\soController;
 use App\Http\Controllers\userController;
+use App\Http\Controllers\wishlist;
+use App\Http\Controllers\wishlistController;
+use App\Http\Controllers\wishlists;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,15 +32,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    // shop controller
+    Route::get('info/{id}', [shopController::class, 'info']);
+
+    // cart controller
+    Route::post('addcart', [CartController::class, 'addcart']);
+    Route::get('carts/{id}', [CartController::class, 'checkcart']);
+    Route::delete('cartcancle/{id}', [CartController::class, 'cartcancle']);
+
+    // wishlist controller
+    Route::get('wishlist', [wishlistController::class, 'index']);
+    Route::post('addwishlist', [wishlistController::class, 'wishlist']);
 });
 
 
 Route::get('/', [userController::class, 'index']);
 
-// shop controller
-Route::get('info/{id}', [shopController::class, 'info']);
-Route::post('addcart', [CartController::class, 'addcart']);
-Route::get('carts/{id}', [CartController::class, 'checkcart']);
+
 
 
 

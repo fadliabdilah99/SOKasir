@@ -7,7 +7,9 @@ use App\Models\margin;
 use App\Models\shop;
 use App\Models\size;
 use App\Models\so;
+use App\Models\wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class shopController extends Controller
 {
@@ -170,6 +172,11 @@ class shopController extends Controller
     {
         $data['margins'] = margin::where('jenis', 'online')->first();
         $data['shop'] = shop::where('id', $id)->with('so')->with('foto')->with('size')->first();
+        if(wishlist::where('user_id', Auth::user()->id)->where('shop_id', $data['shop']->id)->first() != null){
+            $data['wishlist'] = 'text-danger';
+        }else{
+            $data['wishlist'] = 'text-dark';
+        }
         $data['rekomendasi'] = shop::where('id', '!=', $id)->inRandomOrder()->take(6)->get();
         return view('user.cart.info')->with($data);
     }

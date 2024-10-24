@@ -9,6 +9,7 @@
     <noscript>
         <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
+    <!-- Toastr -->
 
     <style>
         .no-login {
@@ -166,9 +167,16 @@
                                     </div>
                                 </button>
 
-                                <div class="btn btn-default btn-lg btn-flat">
-                                    <i class="fas fa-heart fa-lg mr-2"></i>
-                                    Add to Wishlist
+                                <div class="btn-group">
+                                    <form action="{{ url('addwishlist/') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="user_id"
+                                            value="{{ Auth::check() ? Auth::user()->id : 0 }}">
+                                        <input type="hidden" name="shop_id" value="{{ $shop->id }}">
+                                        <button class=" btn btn-default btn-lg btn-flat"><i
+                                                class="{{ $wishlist }} fas fa-heart fa-lg mr-2"></i>
+                                            Add to Wishlist</button>
+                                    </form>
                                 </div>
                             </div>
 

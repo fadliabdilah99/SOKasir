@@ -7,6 +7,7 @@ use App\Models\margin;
 use App\Models\penjualan;
 use App\Models\size;
 use App\Models\so;
+use App\Models\wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -142,5 +143,28 @@ class cartController extends Controller
     {
         $data['carts'] = chart::where('user_id', $id)->with('so')->get();
         return view('user.cart.cart')->with($data);
+    }
+
+
+
+    public function wishlist(Request $request)
+    {
+        if (wishlist::where('user_id', $request->user_id)->where('so_id', $request->so_id)->first() != null) {
+            wishlist::where('user_id', $request->user_id)->where('so_id', $request->so_id)->delete();
+            return redirect()->back();
+        } else {
+            $request->validate([
+                'so_id' => 'required',
+                'user_id' => 'required',
+            ]);
+            wishlist::create($request->all());
+            return redirect()->back();
+        }
+    }
+
+    public function cartcancle($id){
+        chart::where('id', $id)->delete();
+        return redirect()->back()->with('success', 'cart berhasil di hapus');
+
     }
 }

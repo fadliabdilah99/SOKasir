@@ -25,4 +25,8 @@ class shop extends Model
     public function size(){
         return $this->hasMany(size::class);
     }
+
+    public function wishlist(){
+        return $this->hasMany(wishlist::class);
+    }
 }

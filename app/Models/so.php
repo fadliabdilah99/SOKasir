@@ -32,4 +32,5 @@ class so extends Model
     public function shop(){
         return $this->belongsTo(shop::class);
     }
+
 }

@@ -62,11 +62,11 @@
                                                 data-bs-target="#addprod" onclick="onEdits(this, {{ $barang->id }})"><i
                                                     class="fas fa-plus"></i></button>
                                             <form action="{{ url("deleteProd/$barang->id") }}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn bg-danger delete-data" type="submit">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn bg-danger delete-data" type="submit">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -260,4 +260,6 @@
                 })
         });
     </script>
+
+
 @endpush
