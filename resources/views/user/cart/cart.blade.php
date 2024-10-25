@@ -116,7 +116,7 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="#" class="btn btn-primary w-100">Proceed to Checkout</a>
+                <a href="{{ url('payment') }}" class="btn btn-primary w-100">Proceed to Checkout</a>
             </div>
         </div>
 

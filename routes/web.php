@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\alamatController;
 use App\Http\Controllers\cartController;
 use App\Http\Controllers\eventController;
 use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kasirController;
 use App\Http\Controllers\kategoriController;
+use App\Http\Controllers\ongkirController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\shopController;
 use App\Http\Controllers\soController;
@@ -34,6 +36,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
+    // cek ongkir
+    Route::get('/shipping', [ongkirController::class, 'index']);
+    Route::post('/check-ongkir', [ongkirController::class, 'checkOngkir']);
+    Route::get('payment', [ongkirController::class, 'getOngkir']);
+
+    // alamat controller
+    Route::get('alamat', [alamatController::class, 'alamat']);
+    Route::post('addalamat', [alamatController::class, 'addalamat']);
+    Route::post('updatealamat/{id}', [alamatController::class, 'updatealamat']);
+    Route::delete('deletealamat/{id}', [alamatController::class, 'deletealamat']);
+
     // shop controller
     Route::get('info/{id}', [shopController::class, 'info']);
 
@@ -49,10 +62,6 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/', [userController::class, 'index']);
-
-
-
-
 
 Route::group(['middleware' => ['role:karyawan']], function () {
     Route::get('karyawan', [karyawanController::class, 'index']);
