@@ -239,7 +239,7 @@
             document.getElementById('soId').value = tds[0].textContent.trim();
             document.getElementById('kode').value = tds[1].textContent.trim();
             document.getElementById('qty').value = tds[3].textContent.trim();
-            document.getElementById('discount').value = tds[4].textContent.trim();
+            document.getElementById('discount').value = tds[5].textContent.trim();
 
             // Set action URL untuk update
             document.getElementById('modaledit').action = `updateshop/${historyId}`; // URL untuk mengupdate

@@ -7,5 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class alamat extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function city(){
+        return $this->belongsTo(city::class);
+    }
+
+    public function province(){
+        return $this->belongsTo(province::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

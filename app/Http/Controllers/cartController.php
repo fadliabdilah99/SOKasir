@@ -115,13 +115,17 @@ class cartController extends Controller
         if (chart::where('user_id', $request->user_id)->where('so_id', $request->so_id)->where('size', $size->size)->first() != null) {
             $cart = chart::where('user_id', $request->user_id)->where('so_id', $request->so_id)->where('size', $size->size)->first();
             $qtynew = $cart->qty + $request->qty;
+            $discount = $cart->discount + ($request->discount * $request->qty);
+            $total = $cart->total + ($request->total * $request->qty);
             if ($size->qty < $qtynew) {
                 return redirect()->back()->with('error', 'QTY di Cart sudah maksimal');
             }
             $cart->update([
-                'qty' => $qtynew
+                'qty' => $qtynew,
+                'discount' => $discount,
+                'total' => $total,
             ]);
-            return redirect('carts/' . Auth::user()->id)->with('success', 'QTY di tambahkan');
+            return redirect('carts/')->with('success', 'QTY di tambahkan');
         }
         if ($size->qty < $request->qty) {
             return redirect()->back()->with('error', 'Stok tidak mencukupi');
@@ -136,12 +140,12 @@ class cartController extends Controller
             'margin' => $request->margin,
         ]);
 
-        return redirect('carts/' . Auth::user()->id)->with('success', 'Data Berhasil di tambahkan ke keranjang');
+        return redirect('carts/')->with('success', 'Data Berhasil di tambahkan ke keranjang');
     }
 
-    public function checkcart($id)
+    public function checkcart()
     {
-        $data['carts'] = chart::where('user_id', $id)->with('so')->get();
+        $data['carts'] = chart::where('user_id', Auth::user()->id)->with('so')->get();
         return view('user.cart.cart')->with($data);
     }
 

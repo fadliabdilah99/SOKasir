@@ -291,7 +291,7 @@
                     <i class="bi bi-heart text-white fs-4"></i>
                 </a>
                 <!-- Cart Button -->
-                <a href="{{ url('carts/' . Auth::user()->id) }}"
+                <a href="{{ url('carts') }}"
                     class="btn btn-success btn-lg rounded-circle shadow d-flex align-items-center justify-content-center"
                     style="width: 60px; height: 60px;">
                     <i class="bi bi-cart text-white fs-4"></i>

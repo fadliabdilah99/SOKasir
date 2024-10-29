@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\chart;
 use App\Models\foto;
 use App\Models\margin;
 use App\Models\shop;
@@ -72,13 +73,13 @@ class shopController extends Controller
         ]);
 
         if (size::where('shop_id', $request->shop_id)->where('size', $request->size)->first() != null) {
-           size::where('shop_id', $request->shop_id)->where('size', $request->size)->update([
-               'qty' => $request->qty
-           ]);
-           return redirect()->back()->with('success', 'Data Berhasil di Update');
+            size::where('shop_id', $request->shop_id)->where('size', $request->size)->update([
+                'qty' => $request->qty
+            ]);
+            return redirect()->back()->with('success', 'Data Berhasil di Update');
         }
-     size::create($request->all());
-     return redirect()->back()->with('success', 'Berhasil menambahkan size');
+        size::create($request->all());
+        return redirect()->back()->with('success', 'Berhasil menambahkan size');
     }
 
     public function deletesize($id)
@@ -133,6 +134,7 @@ class shopController extends Controller
 
 
 
+        chart::where('so_id', $request->so_id)->update(['discount' => $request->discount]);
 
         if ($request->hasFile('foto')) {
             foto::where('shop_id', $request->so_id)->get()->each(function ($fotos) use ($request) {
@@ -172,9 +174,9 @@ class shopController extends Controller
     {
         $data['margins'] = margin::where('jenis', 'online')->first();
         $data['shop'] = shop::where('id', $id)->with('so')->with('foto')->with('size')->first();
-        if(wishlist::where('user_id', Auth::user()->id)->where('shop_id', $data['shop']->id)->first() != null){
+        if (wishlist::where('user_id', Auth::user()->id)->where('shop_id', $data['shop']->id)->first() != null) {
             $data['wishlist'] = 'text-danger';
-        }else{
+        } else {
             $data['wishlist'] = 'text-dark';
         }
         $data['rekomendasi'] = shop::where('id', '!=', $id)->inRandomOrder()->take(6)->get();

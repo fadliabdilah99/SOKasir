@@ -49,6 +49,22 @@
 
 <body>
 
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                </div>
+                <div class="col-sm-12">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{url('carts')}}">cart</a></li>
+                        <li class="breadcrumb-item active">checkout</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
     <div class="container my-5">
 
         <!-- Address Section -->
@@ -56,11 +72,15 @@
             <h5 class="mb-3">Alamat Pengiriman</h5>
             <div class="d-flex align-items-center">
                 <div class="me-3">
-                    <span class="badge bg-success">Toko Pilihan</span>
+                    <span class="badge bg-success">{{ $alamats->jenis }}</span>
                 </div>
                 <div>
-                    <p><strong>Estation</strong></p>
-                    <p class="mb-0">Jl. Mawar No. 123, Jakarta, Indonesia</p>
+                    <p><strong>{{ $alamats->nama }}</strong></p>
+                    <p class="mb-0">
+                        {{ $alamats->alamatlengkap }}<br>
+                        {{ $alamats->patokan }}<br>
+                        {{ $alamats->province->title }}, {{ $alamats->city->title }}, {{ $alamats->kodePos }}
+                    </p>
                     <a href="{{ url('alamat') }}" class="text-decoration-none">Ubah Alamat</a>
                 </div>
             </div>
@@ -123,15 +143,19 @@
             </div>
             <div class="col-md-6 text-end">
                 <p><strong>Pengiriman:</strong> JNE</p>
-                <p>-</p>
+                <p>Ongkir: Rp {{ number_format($ongkir['cost']) }}</p>
+                <p>Estimated Delivery Time: {{ $ongkir['etd'] }} days</p>
             </div>
         </div>
-
         <!-- Total Section -->
         <div class="total-section text-end">
-            <p>Total Pesanan ({{ $totalbarang }} Produk): <span class="total-price">Rp
-                    {{ number_format($totalharga) }}</span></p>
+            <p>Total Pesanan ({{ $totalbarang }} Produk): Rp
+                {{ number_format($totalharga) }}</p>
             <p>discount barang : - {{ $discountbarang > 0 ? 'Rp ' . number_format($discountbarang) : '' }}</p>
+            <p>Ongkir : Rp {{ number_format($ongkir['cost']) }}</p>
+            <p><span class="total-price">Total : Rp
+                    {{ number_format($totalharga + $ongkir['cost'] - $discountbarang) }}</span></p>
+            <button class="btn btn-success">Bayar</button>
         </div>
     </div>
 

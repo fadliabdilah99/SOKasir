@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('alamats', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('user_id');
             $table->string('nama');
-            $table->integer('notlpn');
-            $table->string('');
+            $table->bigInteger('notlpn');
+            $table->bigInteger('province_id');
+            $table->bigInteger('city_id');
+            $table->integer('kodePos');
+            $table->string('alamatlengkap');
+            $table->string('patokan');
+            $table->string('jenis');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\alamat;
 use App\Models\chart;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -56,6 +57,46 @@ class ongkirController extends Controller
     {
         $user = Auth::user();
         $data['barangs'] = chart::where('user_id', $user->id)->with('so')->get();
+        $data['alamats'] = alamat::where('user_id', $user->id)->where('status', 'primary')->with('city')->first();
+    
+        $code = $data['alamats']->city->code;
+        $qty = $data['barangs']->sum('qty');
+    
+        try {
+            $response = $this->client->request('POST', 'https://api.rajaongkir.com/starter/cost', [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'key' => env('RAJA_ONGKIR_API_KEY'),
+                ],
+                'form_params' => [
+                    'origin' => 151,
+                    'destination' => $code,
+                    'weight' => 200 * $qty,
+                    'courier' => 'jne',
+                ],
+            ]);
+    
+            $cost = json_decode($response->getBody(), true);
+            $result = null;
+    
+            if (isset($cost['rajaongkir']['results'][0]['costs'])) {
+                foreach ($cost['rajaongkir']['results'][0]['costs'] as $costDetail) {
+                    if ($costDetail['service'] == 'REG') {
+                        $result = [
+                            'cost' => $costDetail['cost'][0]['value'],
+                            'etd' => $costDetail['cost'][0]['etd']
+                        ];
+                        break;
+                    }
+                }
+            }
+    
+            $data['ongkir'] = $result;
+        } catch (RequestException $e) {
+            $data['ongkir'] = ['error' => 'Something went wrong: ' . $e->getMessage()];
+        }
+    
         return view('user.checkout.checkout')->with($data);
     }
+    
 }

@@ -43,16 +43,17 @@ Route::middleware('auth')->group(function () {
 
     // alamat controller
     Route::get('alamat', [alamatController::class, 'alamat']);
-    Route::post('addalamat', [alamatController::class, 'addalamat']);
-    Route::post('updatealamat/{id}', [alamatController::class, 'updatealamat']);
-    Route::delete('deletealamat/{id}', [alamatController::class, 'deletealamat']);
+    Route::get('alamat/cities', [alamatController::class, 'getCities']);
+    Route::post('address', [alamatController::class, 'create']);
+    Route::get('alamatUtama/{id}', [alamatController::class, 'alamatutama']);
+    
 
     // shop controller
     Route::get('info/{id}', [shopController::class, 'info']);
 
     // cart controller
     Route::post('addcart', [CartController::class, 'addcart']);
-    Route::get('carts/{id}', [CartController::class, 'checkcart']);
+    Route::get('carts', [CartController::class, 'checkcart']);
     Route::delete('cartcancle/{id}', [CartController::class, 'cartcancle']);
 
     // wishlist controller

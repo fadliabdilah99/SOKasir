@@ -113,7 +113,7 @@
                     @endif
                     <li>
                         @if (Auth::check())
-                            <a href="{{ url('carts/' . Auth::user()->id) }}">
+                            <a href="{{ url('carts') }}">
                                 <i class="bi bi-cart3"></i>
                             </a>
                         @else

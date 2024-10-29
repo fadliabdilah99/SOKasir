@@ -46,4 +46,8 @@ class User extends Authenticatable  //implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    public function alamat(){
+        return $this->hasMany(alamat::class);
+    }
 }

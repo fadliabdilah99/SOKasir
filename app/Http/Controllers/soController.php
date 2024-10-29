@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\barangeven;
+use App\Models\chart;
 use App\Models\foto;
 use App\Models\kategori;
 use App\Models\shop;
@@ -67,6 +68,8 @@ class soController extends Controller
             'hargamodal' => $request->hargamodal,
             'qty' => $request->qty,
         ];
+
+        chart::where('so_id', $id)->delete();
 
         // pengecekan bila data tertentu di isi atau tidak
         if ($request->hasFile('foto') != null) {
