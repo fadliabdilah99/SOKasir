@@ -57,7 +57,7 @@
                 <div class="col-sm-12">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{url('carts')}}">cart</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('carts') }}">cart</a></li>
                         <li class="breadcrumb-item active">checkout</li>
                     </ol>
                 </div>
@@ -154,12 +154,78 @@
             <p>discount barang : - {{ $discountbarang > 0 ? 'Rp ' . number_format($discountbarang) : '' }}</p>
             <p>Ongkir : Rp {{ number_format($ongkir['cost']) }}</p>
             <p><span class="total-price">Total : Rp
-                    {{ number_format($totalharga + $ongkir['cost'] - $discountbarang) }}</span></p>
-            <button class="btn btn-success">Bayar</button>
+                    {{ number_format($pembayaran = $totalharga + $ongkir['cost'] - $discountbarang) }}</span></p>
+            <form action="#" id="donation_form">
+
+                <input type="number" name="pembayaran" id="pembayaran" value="{{ $pembayaran }}" hidden>
+
+                <button class="btn btn-success" type="submit">Bayar</button>
+            </form>
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+        src="{{ !config('services.midtrans.isProduction') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}"
+        data-client-key="{{ config('services.midtrans.clientKey') }}"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script>
+        $("#donation_form").submit(function(event) {
+            console.log("Form submitted");
+            event.preventDefault();
+
+
+            $.post("/api/donation", {
+                    _method: 'POST',
+                    _token: '{{ csrf_token() }}',
+                    pembayaran: $('#pembayaran').val(),
+                },
+                function(data, status) {
+                    console.log(data);
+                    snap.pay(data.snap_token, {
+                        // Optional
+                        onSuccess: function(result) {
+                            location.reload();
+                        },
+                        // Optional
+                        onPending: function(result) {
+                            location.reload();
+                        },
+                        // Optional
+                        onError: function(result) {
+                            location.reload();
+                        }
+                    });
+                    return false;
+                }
+            );
+        });
+
+
+        $('.delete-data').click(function(e) {
+            e.preventDefault()
+            const data = $(this).closest('tr').find('td:eq(1)').text()
+            Swal.fire({
+                    title: 'Data akan hilang!',
+                    text: `Apakah penghapusan data ${data} akan dilanjutkan?`,
+                    icon: 'warning',
+                    showDenyButton: true,
+                    confirmButtonText: 'Ya',
+                    denyButtonText: 'Tidak',
+                    focusConfirm: false
+                })
+                .then((result) => {
+                    if (result.isConfirmed) $(e.target).closest('form').submit()
+                    else swal.close()
+                })
+        });
+    </script>
 </body>
 
 </html>

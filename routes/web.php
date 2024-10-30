@@ -8,6 +8,7 @@ use App\Http\Controllers\karyawanController;
 use App\Http\Controllers\kasirController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ongkirController;
+use App\Http\Controllers\paymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\shopController;
 use App\Http\Controllers\soController;
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('alamat/cities', [alamatController::class, 'getCities']);
     Route::post('address', [alamatController::class, 'create']);
     Route::get('alamatUtama/{id}', [alamatController::class, 'alamatutama']);
-    
+
 
     // shop controller
     Route::get('info/{id}', [shopController::class, 'info']);
@@ -122,5 +123,6 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::post('event', [eventController::class, 'create']);
 });
 
-
+Route::post('/donation', [paymentController::class, 'store']);
+Route::post('/notification', [paymentController::class, 'notification']);
 require __DIR__ . '/auth.php';
