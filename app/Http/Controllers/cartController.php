@@ -92,6 +92,7 @@ class cartController extends Controller
                 'total' => $carts->total - $carts->discount,
                 'discount' => $carts->discount,
                 'jenis' => $carts->margin,
+                'status' => 'success',
             ]);
 
             $carts->delete();
@@ -166,9 +167,9 @@ class cartController extends Controller
         }
     }
 
-    public function cartcancle($id){
+    public function cartcancle($id)
+    {
         chart::where('id', $id)->delete();
         return redirect()->back()->with('success', 'cart berhasil di hapus');
-
     }
 }

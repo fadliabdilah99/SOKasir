@@ -23,11 +23,13 @@ class eventController extends Controller
 
             // Hitung total pendapatan dikurangi diskon dari penjualan
             $event->total_pendapatan = Penjualan::whereIn('kodeInvoice', $pesananIds)
+                ->where('status', 'success')
                 ->selectRaw('SUM(total - discount) as total_pendapatan')
                 ->value('total_pendapatan');
 
             // Hitung total discount dari penjualan
             $event->total_discount = Penjualan::whereIn('kodeInvoice', $pesananIds)
+                ->where('status', 'success')
                 ->sum('discount');
         }
 

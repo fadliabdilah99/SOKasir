@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\chart;
 use App\Models\penjualan;
 use App\Models\shop;
+use App\Models\size;
 use App\Models\so;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,76 +84,57 @@ class paymentController extends Controller
 
     public function notification(Request $request)
     {
-        // Menerima payload notifikasi dari Midtrans
         $payload = $request->getContent();
-
-        // Log payload notifikasi
         Log::info('Midtrans Notification Received:');
         Log::info($payload);
 
-        // Parsing payload JSON
         $notification = json_decode($payload);
 
-        // Mendapatkan data yang relevan dari notifikasi
         $transactionStatus = $notification->transaction_status;
         $paymentType = $notification->payment_type;
         $kodeInvoice = $notification->order_id;
         $fraudStatus = $notification->fraud_status;
 
-        // Temukan donasi berdasarkan ID pesanan
         $barang = penjualan::where('kodeInvoice', $kodeInvoice)->get();
 
-
-
-        // Jika donasi tidak ditemukan, log pesan dan kembalikan respons
-        if (!$barang) {
-            LOG::error('Donation with order ID ' . $barang->id . ' not found.');
-            return response('Donation not found.', 404);
-        }
-
-        $barang = penjualan::where('kodeInvoice', $kodeInvoice)->get();
-
-        // Jika barang tidak ditemukan, log pesan dan kembalikan respons
         if ($barang->isEmpty()) {
             Log::error('Donation with order ID ' . $kodeInvoice . ' not found.');
             return response('Donation not found.', 404);
         }
 
-        $status = '';
-        
+
         foreach ($barang as $paymentrespons) {
-            if ($transactionStatus == 'capture') {
-                if ($paymentType == 'credit_card') {
-                    $status = ($fraudStatus == 'challenge') ? 'pending' : 'success';
-                    $paymentrespons->status = ($fraudStatus == 'challenge') ? 'pending' : 'success';
-                }
+            // Logika status transaksi
+            if ($transactionStatus == 'capture' && $paymentType == 'credit_card') {
+                $paymentrespons->status = ($fraudStatus == 'challenge') ? 'pending' : 'success';
             } elseif ($transactionStatus == 'settlement') {
-                $status = 'success';
                 $paymentrespons->status = 'success';
             } elseif ($transactionStatus == 'pending') {
                 $paymentrespons->status = 'pending';
-            } elseif ($transactionStatus == 'deny') {
+            } elseif ($transactionStatus == 'deny' || $transactionStatus == 'cancel') {
                 $paymentrespons->status = 'failed';
             } elseif ($transactionStatus == 'expire') {
                 $paymentrespons->status = 'expired';
-            } elseif ($transactionStatus == 'cancel') {
-                $paymentrespons->status = 'failed';
             }
-        
-            // Simpan perubahan pada setiap paymentrespons
+
             $paymentrespons->save();
+
+            // Proses pengurangan stok jika sukses
+            if ($paymentrespons->status == 'success') {
+                $cart = chart::where('so_id', $paymentrespons->so_id)->where('user_id', $paymentrespons->user_id)->first();
+                $shop = shop::where('so_id', $paymentrespons->so_id)->first();
+
+                if ($cart && $shop) {
+                    $size = size::where('shop_id', $shop->id)->where('size', $cart->size)->first();
+                    if ($size) {
+                        $size->update(['qty' => $size->qty - $cart->qty]);
+                    }
+                    $shop->update(['qty' => $shop->qty - $cart->qty]);
+                    $cart->delete();
+                }
+            }
         }
 
-        if ($status == 'success') {
-           $cart =  chart::where('user_id', Auth::user())->get();
-           foreach ($cart as $item) {
-            $updateqty = shop::where('so_id', $item->so_id)->first();
-            $updateqty->update(['qty' => $updateqty->qty - $item->qty]);
-            $item->delete();
-           }
-        }
-
-        // Kembalikan respons OK jika proses berhasil
         return response('Notification processed.', 200);
     }
 }

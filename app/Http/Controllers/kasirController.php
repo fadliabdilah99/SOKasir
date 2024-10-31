@@ -21,6 +21,8 @@ class kasirController extends Controller
     {
         $data['eventId'] = $id;
         $data['pesanan'] = pesanan::where('event_id', $id)->with('prosesco')->get();
+
+        // proses penghapusan pesan secara otomatis jika tidak jadi
         $data['pesanan']->each(function ($pesanan) {
             if (penjualan::where('kodeInvoice', $pesanan->id)->first() == null) {
                 $prosesco = prosesco::where('pesanan_id', $pesanan->id)->get();
@@ -106,6 +108,7 @@ class kasirController extends Controller
                 'total' => $hargajual - $discount,
                 'discount' => $discount,
                 'jenis' => $request->jenis,
+                'status' => 'success',
             ]);
             prosesco::where('id', $c->id)->delete();
         }

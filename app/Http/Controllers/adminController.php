@@ -23,6 +23,7 @@ class adminController extends Controller
         $salesData = DB::table('penjualans')
             ->select(DB::raw('SUM(total) as total'), DB::raw('MONTH(created_at) as month'))
             ->where('created_at', '>=', $startDate)
+            ->where('status', 'success')
             ->whereIn('jenis', ['event', 'ofline'])
             ->groupBy(DB::raw('MONTH(created_at)'))
             ->orderBy(DB::raw('MONTH(created_at)'))
@@ -30,6 +31,7 @@ class adminController extends Controller
         $salesonline = DB::table('penjualans')
             ->select(DB::raw('SUM(total) as total'), DB::raw('MONTH(created_at) as month'))
             ->where('created_at', '>=', $startDate)
+            ->where('status', 'success')
             ->whereIn('jenis', ['online'])
             ->groupBy(DB::raw('MONTH(created_at)'))
             ->orderBy(DB::raw('MONTH(created_at)'))
@@ -49,7 +51,7 @@ class adminController extends Controller
             $online[] = $salesonline->get($month, 0);
         }
         $data['margin'] = margin::get();
-        $data['pesanan'] = penjualan::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->with('so')->get();
+        $data['pesanan'] = penjualan::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->where('status', 'success')->with('so')->get();
         $data['pemasukanonline'] = $data['pesanan']->where('jenis', 'online')->sum('total');
         $julmahofline = $data['pesanan']->where('jenis', 'ofline')->sum('total') + $data['pesanan']->where('jenis', 'event')->sum('total');
         $data['pemasukanoffline'] = $julmahofline;
@@ -73,7 +75,7 @@ class adminController extends Controller
 
         // Total valuasi dari ketiga tabel
         $data['valuasi'] = $data['valuasi'] + $data['valuasi_shop'] + $data['valuasi_event'];
-        $data['totalprod'] = so::sum('qty');
+        $data['totalprod'] = so::sum('qty') + barangeven::sum('qty') + shop::sum('qty');
         return view('admin.home.index', compact('offline', 'online', 'bulan'))->with($data);
     }
 

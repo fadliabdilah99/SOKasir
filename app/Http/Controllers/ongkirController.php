@@ -58,10 +58,10 @@ class ongkirController extends Controller
         $user = Auth::user();
         $data['barangs'] = chart::where('user_id', $user->id)->with('so')->get();
         $data['alamats'] = alamat::where('user_id', $user->id)->where('status', 'primary')->with('city')->first();
-    
+
         $code = $data['alamats']->city->code;
         $qty = $data['barangs']->sum('qty');
-    
+
         try {
             $response = $this->client->request('POST', 'https://api.rajaongkir.com/starter/cost', [
                 'headers' => [
@@ -75,10 +75,10 @@ class ongkirController extends Controller
                     'courier' => 'jne',
                 ],
             ]);
-    
+
             $cost = json_decode($response->getBody(), true);
             $result = null;
-    
+
             if (isset($cost['rajaongkir']['results'][0]['costs'])) {
                 foreach ($cost['rajaongkir']['results'][0]['costs'] as $costDetail) {
                     if ($costDetail['service'] == 'REG') {
@@ -90,13 +90,17 @@ class ongkirController extends Controller
                     }
                 }
             }
-    
+
             $data['ongkir'] = $result;
         } catch (RequestException $e) {
             $data['ongkir'] = ['error' => 'Something went wrong: ' . $e->getMessage()];
         }
-    
+
+        if (isset($data['ongkir']['error'])) {
+            // Redirect ke halaman '/' dengan pesan error jika ada
+            return redirect('/')->with('error', 'Terjadi kesalahan');
+        }
+
         return view('user.checkout.checkout')->with($data);
     }
-    
 }
