@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\chart;
 use App\Models\foto;
 use App\Models\margin;
+use App\Models\penjualan;
 use App\Models\shop;
 use App\Models\size;
 use App\Models\so;
@@ -16,11 +17,24 @@ class shopController extends Controller
 {
     public function index()
     {
+        $data['payment'] = Penjualan::where('status', 'payment')
+            ->get()
+            ->groupBy('kodeInvoice')->count();
+
+        $data['sending'] = Penjualan::where('status', 'sending')
+            ->get()
+            ->groupBy('kodeInvoice')->count();
+
+        $data['selesai'] = Penjualan::where('status', 'selesai')
+            ->get()
+            ->groupBy('kodeInvoice')->count();
 
         $data['so'] = so::with('kategori')->get();
         $data['barangs'] = shop::with('so')->with('size')->with('kategori')->with('foto')->get();
         return view('karyawan.shop.index')->with($data);
     }
+
+    
 
     public function add(Request $request)
     {

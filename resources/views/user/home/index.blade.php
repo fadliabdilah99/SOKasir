@@ -123,7 +123,7 @@
                         @endif
                     </li>
 
-                    <li><a href="{{ url('profile') }}"><i class="bi bi-person-circle"></i></a></li>
+                    <li><a href="{{ url('profiles') }}"><i class="bi bi-person-circle"></i></a></li>
                 </ul>
             </nav>
 

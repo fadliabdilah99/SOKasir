@@ -51,6 +51,7 @@ class paymentController extends Controller
                     'discount' => $item->discount,
                     'jenis' => $item->margin,
                     'status' => 'pending',
+                    'size' => $item->size,
                 ]);
             }
             $payload = [
@@ -106,9 +107,9 @@ class paymentController extends Controller
         foreach ($barang as $paymentrespons) {
             // Logika status transaksi
             if ($transactionStatus == 'capture' && $paymentType == 'credit_card') {
-                $paymentrespons->status = ($fraudStatus == 'challenge') ? 'pending' : 'success';
+                $paymentrespons->status = ($fraudStatus == 'challenge') ? 'pending' : 'payment';
             } elseif ($transactionStatus == 'settlement') {
-                $paymentrespons->status = 'success';
+                $paymentrespons->status = 'payment';
             } elseif ($transactionStatus == 'pending') {
                 $paymentrespons->status = 'pending';
             } elseif ($transactionStatus == 'deny' || $transactionStatus == 'cancel') {
@@ -120,7 +121,7 @@ class paymentController extends Controller
             $paymentrespons->save();
 
             // Proses pengurangan stok jika sukses
-            if ($paymentrespons->status == 'success') {
+            if ($paymentrespons->status == 'payment') {
                 $cart = chart::where('so_id', $paymentrespons->so_id)->where('user_id', $paymentrespons->user_id)->first();
                 $shop = shop::where('so_id', $paymentrespons->so_id)->first();
 

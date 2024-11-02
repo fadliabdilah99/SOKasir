@@ -9,6 +9,7 @@ use App\Http\Controllers\kasirController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\ongkirController;
 use App\Http\Controllers\paymentController;
+use App\Http\Controllers\pesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\shopController;
 use App\Http\Controllers\soController;
@@ -35,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('profiles', [ProfileController::class, 'profile']);
 
 
     // cek ongkir
@@ -110,6 +113,12 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::delete('deletesize/{id}', [shopController::class, 'deletesize']);
     Route::post('updateshop/{id}', [shopController::class, 'update']);
     Route::delete('deleteShop/{id}', [shopController::class, 'delete']);
+
+    // pesanan controller
+    Route::get('dikemas', [pesananController::class, 'dikemas']);
+    Route::get('print-paket/{id}', [pesananController::class, 'print']);
+    Route::post('dikirim/{id}', [pesananController::class, 'dikirim']);
+
 });
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin', [adminController::class, 'index']);
