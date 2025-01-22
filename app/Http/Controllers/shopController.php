@@ -25,7 +25,7 @@ class shopController extends Controller
             ->get()
             ->groupBy('kodeInvoice')->count();
 
-        $data['selesai'] = Penjualan::where('status', 'selesai')
+        $data['selesai'] = Penjualan::where('status', 'success')
             ->get()
             ->groupBy('kodeInvoice')->count();
 

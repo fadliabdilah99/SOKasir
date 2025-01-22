@@ -66,7 +66,7 @@
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ url('karyawan') }}">Home</a></li>
             <li class="breadcrumb-item"><a href="{{ url('shop') }}">shop</a></li>
-            <li class="breadcrumb-item active">Dikemas</li>
+            <li class="breadcrumb-item active">Dikirm</li>
         </ol>
     </div><!-- /.col -->
     <div class="tab-pane active container pt-5" id="activity">
@@ -75,7 +75,9 @@
         @else
             @foreach ($dikemast as $order)
                 <div class="border rounded p-2">
-                    <h5>Kode Invoice: #{{ $order['kodeInvoice'] }}</h5>
+                    <h5>Pemesan : {{ $order['items']->first()->user->name }}</h5>
+                    <p>id User : {{ $order['items']->first()->user->id }}</p>
+                    <p class="text-muted">Kode Invoice: #{{ $order['kodeInvoice'] }}</p>
                     <div class="container">
                         @foreach ($order['items'] as $dikemas)
                             <div class="cart-item d-flex align-items-center">
@@ -102,45 +104,12 @@
                             </div>
                         @endforeach
                     </div>
+                    <p><i class="bi bi-copy btn" onclick="copyToClipboard('{{ $order['items']->first()->resi }}')"></i>
+                        {{ $order['items']->first()->resi }}</p>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal{{ $order['kodeInvoice'] }}">
-                            Kirim
-                        </button>
-                        <a href="print-paket/{{ $order['kodeInvoice'] }}" class="btn btn-primary m-1">Print</a>
-                        <button class="btn btn-danger m-1">Tolak</button>
-                    </div>
-                </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal{{ $order['kodeInvoice'] }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Masukan Resi JNE</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-horizontal" action="dikirim/{{ $order['kodeInvoice'] }}" method="POST"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <div class="col-sm-12">
-                                                <input type="text" name="resi" class="form-control" id="kodese"
-                                                    placeholder="Masukan Kode">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-footer -->
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        <a href="selesai/{{ $order['kodeInvoice'] }}" class="btn btn-success m-1 confirm" >
+                            selesai
+                        </a>
                     </div>
                 </div>
             @endforeach
@@ -187,6 +156,47 @@
             });
         </script>
     @endif
+
+
+    <script>
+        function copyToClipboard(text) {
+            var textArea = document.createElement("textarea");
+
+            textArea.value = text;
+
+            document.body.appendChild(textArea);
+
+            textArea.select();
+            textArea.setSelectionRange(0, 9999);
+
+            document.execCommand("copy");
+
+            document.body.removeChild(textArea);
+        }
+    </script>
+    <script>
+        $('.confirm').click(function(e) {
+            e.preventDefault()
+
+            Swal.fire({
+                icon: 'question', // Tanda seru
+                title: 'Konfirmasi!',
+                text: 'Pastikan Paket Benar Benar Sudah Sampai. Apakah Ingin Melanjutkan?',
+                showCancelButton: true, // Jika ingin menampilkan tombol batal
+                confirmButtonText: 'Konfirmasi', // Teks tombol konfirmasi
+                cancelButtonText: 'Batal', // Teks tombol batal
+                customClass: {
+                    // Menggunakan custom class
+                    popup: 'no-login', // Tambahkan class custom jika ingin
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect ke halaman login atau tindakan lainnya
+                    window.location.href = 'selesai/' + '{{ $order['kodeInvoice'] }}'; // Ganti dengan URL login yang sesuai
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Twilio\Rest\Client;
+
+// use Twilio\Rest\Client;
 
 class paymentController extends Controller
 {
@@ -133,6 +136,20 @@ class paymentController extends Controller
                     $shop->update(['qty' => $shop->qty - $cart->qty]);
                     $cart->delete();
                 }
+
+                // notifikasi ke admin
+                $sid    = env('TWILIO_SID');
+                $token  = env('TWILIO_TOKEN');
+                $twilio = new Client($sid, $token);
+
+                $message = $twilio->messages
+                    ->create(
+                        "whatsapp:+6281220786387", // to
+                        array(
+                            "from" => "whatsapp:+14155238886",
+                            "body" => 'Ada Pesanan Yang Harus dikirim Nihhhh....!!'
+                        )
+                    );
             }
         }
 

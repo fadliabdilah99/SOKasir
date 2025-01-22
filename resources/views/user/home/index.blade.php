@@ -99,15 +99,15 @@
                     </li>
                     <li><a href="left-sidebar.html">SALE</a></li>
                     @if (Auth::check())
-                    <li>
-                        <form id="logout-form" action="{{ 'logout' }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                        <a href="#" class="btn btn-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Logout
-                        </a>
-                    </li>
-                    
+                        <li>
+                            <form id="logout-form" action="{{ 'logout' }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                            <a href="#" class="btn btn-danger"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                        </li>
                     @else
                         <li><a href="{{ url('login') }}">Login</a></li>
                     @endif

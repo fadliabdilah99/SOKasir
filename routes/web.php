@@ -63,6 +63,11 @@ Route::middleware('auth')->group(function () {
     // wishlist controller
     Route::get('wishlist', [wishlistController::class, 'index']);
     Route::post('addwishlist', [wishlistController::class, 'wishlist']);
+
+
+    // invoice
+    Route::get('invoice/{id}', [kasirController::class, 'invoice']);
+    Route::get('print/{id}', [kasirController::class, 'print']);
 });
 
 
@@ -97,8 +102,6 @@ Route::group(['middleware' => ['role:karyawan']], function () {
     Route::post('addprod', [kasirController::class, 'addprod']);
     Route::delete('deleteProds/{id}', [kasirController::class, 'destroyprod']);
     Route::post('selesaikan', [kasirController::class, 'done']);
-    Route::get('invoice/{id}', [kasirController::class, 'invoice']);
-    Route::get('print/{id}', [kasirController::class, 'print']);
 
     // cart manual
     Route::get('cart', [cartController::class, 'index']);
@@ -116,9 +119,11 @@ Route::group(['middleware' => ['role:karyawan']], function () {
 
     // pesanan controller
     Route::get('dikemas', [pesananController::class, 'dikemas']);
+    Route::get('dikirim', [pesananController::class, 'dikirim']);
+    Route::get('selesai', [pesananController::class, 'selesai']);
     Route::get('print-paket/{id}', [pesananController::class, 'print']);
-    Route::post('dikirim/{id}', [pesananController::class, 'dikirim']);
-
+    Route::post('dikirim/{id}', [pesananController::class, 'sending']);
+    Route::get('selesai/{id}', [pesananController::class, 'done']);
 });
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin', [adminController::class, 'index']);

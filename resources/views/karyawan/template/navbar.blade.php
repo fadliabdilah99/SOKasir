@@ -1,7 +1,7 @@
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
-        <a href="../../index3.html" class="navbar-brand d-flex">
+        <a href="{{ url('/') }}" class="navbar-brand d-flex">
             <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                 style="opacity: .8">
             <span class="brand-text font-weight-light">Wellcome {{ Auth::user()->name }}</span>
@@ -16,21 +16,21 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="{{url('profile')}}" class="nav-link">Profile</a>
+                    <a href="{{ url('profile') }}" class="nav-link">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{url('shop')}}" class="btn btn-success me-2">Shop</a>
+                    <a href="{{ url('shop') }}" class="btn btn-success me-2">Shop</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{url('event-karyawan')}}" class="btn btn-info me-2">event</a>
+                    <a href="{{ url('event-karyawan') }}" class="btn btn-info me-2">event</a>
                 </li>
                 <li class="nav-item">
-                    <form action="{{url('logout')}}" method="POST">
+                    <form action="{{ url('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-danger">Logout</button>
                     </form>
                 </li>
-               
+
             </ul>
         </div>
 

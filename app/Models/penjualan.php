@@ -58,4 +58,9 @@ class penjualan extends Model
         $this->attributes['status'] = 'expired';
         self::save();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

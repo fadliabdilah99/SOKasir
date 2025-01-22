@@ -17,20 +17,46 @@ class ProfileController extends Controller
 
     public function profile()
     {
-        // Mengambil data penjualan user yang sedang login
         $penjualan = Penjualan::where('user_id', Auth::user()->id)
-            ->where('status', 'payment') // filter sesuai status yang diinginkan
-            ->with('so') // relasi dengan tabel atau model 'so'
+            ->where('status', 'payment')
+            ->with('so')
             ->get()
-            ->groupBy('kodeInvoice'); // kelompokkan berdasarkan kodeInvoice
-
-        // Map setiap grup kodeInvoice dan masukkan data barang di dalamnya
+            ->groupBy('kodeInvoice');
         $data['dikemast'] = $penjualan->map(function ($items, $kodeInvoice) {
             return [
                 'kodeInvoice' => $kodeInvoice,
-                'items' => $items // kumpulan barang di setiap kodeInvoice
+                'items' => $items
             ];
         });
+
+
+        $dikirim = Penjualan::where('user_id', Auth::user()->id)
+            ->where('status', 'sending')
+            ->with('so')
+            ->get()
+            ->groupBy('kodeInvoice');
+        $data['sendings'] = $dikirim->map(function ($items, $kodeInvoice) {
+            return [
+                'kodeInvoice' => $kodeInvoice,
+                'items' => $items
+            ];
+        });
+
+
+        $selesai = Penjualan::where('user_id', Auth::user()->id)
+            ->where('status', 'success')
+            ->with('so')
+            ->get()
+            ->groupBy('kodeInvoice');
+        $data['successt'] = $selesai->map(function ($items, $kodeInvoice) {
+            return [
+                'kodeInvoice' => $kodeInvoice,
+                'items' => $items
+            ];
+        });
+
+        $data['pembelian'] = $selesai->count();
+        $data['alamat'] = Auth::user()->alamat->where('status', 'primary')->first();
 
         return view('user.profile.index')->with($data);
     }

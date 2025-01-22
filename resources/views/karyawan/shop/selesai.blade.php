@@ -66,81 +66,49 @@
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ url('karyawan') }}">Home</a></li>
             <li class="breadcrumb-item"><a href="{{ url('shop') }}">shop</a></li>
-            <li class="breadcrumb-item active">Dikemas</li>
+            <li class="breadcrumb-item active">selesai</li>
         </ol>
     </div><!-- /.col -->
     <div class="tab-pane active container pt-5" id="activity">
-        @if ($dikemast->isEmpty())
+        @if ($selesai->isEmpty())
             <p>Belum ada barang</p>
         @else
-            @foreach ($dikemast as $order)
-                <div class="border rounded p-2">
-                    <h5>Kode Invoice: #{{ $order['kodeInvoice'] }}</h5>
+            @foreach ($selesai as $success)
+                <div class="border rounded p-2 mb-3">
+                    <h5>Pemesan : {{ $success['items']->first()->user->name }}</h5>
+                    <p>id User : {{ $success['items']->first()->user->id }}</p>
+                    <p class="text-muted">Kode Invoice: #{{ $success['kodeInvoice'] }}</p>
                     <div class="container">
-                        @foreach ($order['items'] as $dikemas)
+                        @foreach ($success['items'] as $done)
                             <div class="cart-item d-flex align-items-center">
                                 <!-- Product Image -->
-                                <img src="{{ asset('assets/fotoSO/' . $dikemas->so->foto) }}" alt="Product Image">
+                                <img src="{{ asset('assets/fotoSO/' . $done->so->foto) }}" alt="Product Image">
 
                                 <!-- Product Details -->
                                 <div class="cart-item-details">
-                                    <div class="cart-item-title">{{ $dikemas->so->nama }}</div>
+                                    <div class="cart-item-title">{{ $done->so->nama }}</div>
                                     <div class="cart-item-subtitle">
-                                        Size : {{ $dikemas->size }}
+                                        Size : {{ $done->size }}
                                     </div>
                                 </div>
 
                                 <!-- Product Quantity -->
                                 <div class="quantity-selector mr-3">
                                     <span class="cart-item-quantity mx-2">QTY
-                                        {{ $dikemas->qty }}</span>
+                                        {{ $done->qty }}</span>
                                 </div>
 
                                 <!-- Product Price -->
                                 <div class="cart-item-price">Rp.
-                                    {{ number_format($dikemas->total) }}</div>
+                                    {{ number_format($done->total) }}</div>
                             </div>
                         @endforeach
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-success m-1" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal{{ $order['kodeInvoice'] }}">
-                            Kirim
+                            data-bs-target="#exampleModal{{ $success['kodeInvoice'] }}">
+                            Invoice
                         </button>
-                        <a href="print-paket/{{ $order['kodeInvoice'] }}" class="btn btn-primary m-1">Print</a>
-                        <button class="btn btn-danger m-1">Tolak</button>
-                    </div>
-                </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal{{ $order['kodeInvoice'] }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Masukan Resi JNE</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-horizontal" action="dikirim/{{ $order['kodeInvoice'] }}" method="POST"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <div class="col-sm-12">
-                                                <input type="text" name="resi" class="form-control" id="kodese"
-                                                    placeholder="Masukan Kode">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-footer -->
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                 </div>
             @endforeach

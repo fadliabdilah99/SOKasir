@@ -74,7 +74,6 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Harga</th>
                                                 <th>Qty</th>
                                                 <th>Product</th>
                                                 <th>Serial #</th>
@@ -93,7 +92,6 @@
                                                     $total += $item->total;
                                                 @endphp
                                                 <tr>
-                                                    <td>{{ $item-> }}</td>
                                                     <td>{{ $item->qty }}</td>
                                                     <td>{{ $item->so->nama }}</td>
                                                     <td>{{ $item->so->kategori->name }}</td>
@@ -123,7 +121,9 @@
                                         style="margin-top: 10px; border: 1px solid #4cae4c;">
                                         <strong>LUNAS</strong>
                                     </h1>
+                                    @if ($user->role != 'user')
                                     <p>penganggung jawab : {{ $user->name }}</p>
+                                    @endif
 
                                 </div>
                                 <!-- /.col -->

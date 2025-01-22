@@ -50,4 +50,8 @@ class User extends Authenticatable  //implements MustVerifyEmail
     public function alamat(){
         return $this->hasMany(alamat::class);
     }
+
+    public function penjualan(){
+        return $this->hasMany(penjualan::class);
+    }
 }
